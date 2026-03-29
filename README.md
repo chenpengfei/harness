@@ -53,6 +53,10 @@ Agent-First 时代的工程支架 = 环境 x 知识 x 约束 x 回路
 
 ---
 
+该工程的目的是将以上 Harness Engineering 理念赋能到你的代码仓库中。
+
+---
+
 # 安装指南
 
 将以下指令复制给你的 Agent（Claude Code 或其他支持 WebFetch 的 Agent）：
