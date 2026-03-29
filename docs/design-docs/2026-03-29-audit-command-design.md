@@ -7,22 +7,13 @@
 
 ## 概述
 
-`/audit` 命令检查工程中设计哲学、思想的一致性，确保 harness 仓库本身及安装了 harness 能力的目标项目不偏离核心原则。命令通过三轮分维度扫描识别问题，暂停询问用户授权后自动修复。
+`/audit` 命令检查 harness 仓库自身的设计哲学一致性，确保仓库内容不偏离核心原则。命令通过三轮分维度扫描识别问题，暂停询问用户授权后自动修复。
 
 ---
 
-## 运行环境识别
+## 运行环境
 
-命令启动时自动检测当前工作目录所属环境：
-
-| 检测条件 | 判断结果 |
-|---|---|
-| 根目录存在 `INSTALL.md` + `ARCHITECTURE.md` | harness 仓库模式 |
-| 根目录存在 `.claude/harness-config.json` | 目标项目模式 |
-| 两者都存在 | 按 harness 仓库模式处理 |
-| 两者都不存在 | 报错退出，提示用户 |
-
-环境判断结果决定后续使用哪套内置原则和期望文件结构。
+命令仅在 harness 仓库中运行。启动时检查根目录是否存在 `INSTALL.md` + `ARCHITECTURE.md`，若不存在则报错退出并提示用户。
 
 ---
 
@@ -39,19 +30,13 @@
 
 ### 第二轮：结构完整性
 
-**harness 仓库模式**：
 - `docs/install/phase-0-preflight.md` 至 `phase-7-agent-team.md` 是否全部存在
 - `INSTALL.md` 中引用的所有 phase 文件是否都存在于磁盘
 - `docs/design-docs/index.md` 是否存在
 
-**目标项目模式**：
-- `docs/environment/`、`docs/knowledge/`、`docs/constraints/`、`docs/feedback/` 四个维度目录是否齐全
-- `.claude/commands/harness.md` 是否存在
-- `.claude/harness-config.json` 是否存在且包含所有必填字段（`version`、`project`、`techStack`、`teamSize`、`projectStage`）
-
 ### 第三轮：原则遵守
 
-**harness 仓库模式**内置原则（6 条）：
+内置原则（6 条）：
 
 1. 仓库不含可执行代码（无 `.js`、`.py`、`.ts` 等代码文件）
 2. 安装后无运行时依赖（`INSTALL.md` 和 `.claude/commands/` 下的命令文件不依赖外部 URL 才能执行，`/harness` 命令可离线运行）
@@ -59,13 +44,6 @@
 4. 文档使用符号名称而非硬链接（无 `[text](../other.md)` 形式的内部跨文件链接）
 5. 关键节点必须有人类审批（`do.md` 流程中审批检查点完整存在）
 6. 设计变更须有对应 `docs/design-docs/` 记录
-
-**目标项目模式**内置原则（4 条）：
-
-1. `CLAUDE.md` 保持 200 行以内
-2. `/harness` 命令完整保留且内容可离线运行（不依赖外部网络）
-3. E-K-C-F 四维文件均有实质内容（非仅含模板占位符）
-4. 人类检查点在 `do.md` 流程中未被删除或绕过
 
 ---
 
