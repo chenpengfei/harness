@@ -15,7 +15,7 @@ Harness 是一个 Agent-First 工程支架脚手架。用户将本仓库的 GitH
 
 ### harness 仓库职责
 
-纯内容仓库，不含可执行代码。Agent 通过 WebFetch/Read 读取 `INSTALL.md`，该文件是完整的安装剧本，内嵌所有文件模板内容。安装完成后，harness 仓库与目标项目之间无运行时依赖。
+纯内容仓库，不含可执行代码。Agent 通过 WebFetch/Read 读取 `INSTALL.md`，该文件是完整的安装剧本，内嵌所有文件模板内容。安装完成后，harness 仓库与目标项目之间安装后无依赖。
 
 ### harness 仓库结构
 
