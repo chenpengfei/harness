@@ -44,3 +44,36 @@ description: 检查 harness 仓库设计哲学、思想的一致性
 无问题时记录：`✓ 术语一致性检查通过`
 
 ---
+
+## 第二轮：结构完整性
+
+### 2.1 Phase 文件完整性
+
+用 Glob 检查以下 8 个文件是否存在：
+
+- `docs/install/phase-0-preflight.md`
+- `docs/install/phase-1-info-collection.md`
+- `docs/install/phase-2-environment.md`
+- `docs/install/phase-3-knowledge.md`
+- `docs/install/phase-4-constraints.md`
+- `docs/install/phase-5-feedback.md`
+- `docs/install/phase-6-finalize.md`
+- `docs/install/phase-7-agent-team.md`
+
+每个缺失的文件记录：`[缺失] <路径> 不存在`
+
+### 2.2 INSTALL.md 引用完整性
+
+读取 `INSTALL.md`，用 Grep 提取所有 `docs/install/phase-*.md` 格式的路径引用，逐一用 Glob 检查对应文件是否存在。
+
+每个"INSTALL.md 引用但磁盘不存在"的路径记录：
+`[引用断裂] INSTALL.md 引用了 <路径>，但该文件不存在`
+
+### 2.3 设计文档索引
+
+用 Glob 检查 `docs/design-docs/index.md` 是否存在。若不存在，记录：
+`[缺失] docs/design-docs/index.md 不存在`
+
+无问题时记录：`✓ 结构完整性检查通过`
+
+---
