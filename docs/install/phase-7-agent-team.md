@@ -51,4 +51,4 @@
 > - `/do 修复首页加载缓慢问题` → 启动 bugfix 流水线
 > - `/do 重构数据库查询层` → 启动 refactor 流水线"
 
-更新 `.claude/harness-config.json`，将 `agentTeam` 字段设为 `true`。
+更新 `.harness/harness-config.json`，将 `agentTeam` 字段设为 `true`。
