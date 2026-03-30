@@ -47,9 +47,19 @@
 
 记录为：`PROJECT_STAGE`（exploration / iteration / production）
 
+### 问题 5：Harness 仓库地址
+
+> "请提供 harness 仓库的 Git 地址（用于后续通过 `/harness-feedback` 提交改进建议）。"
+>
+> 例如：`git@github.com:chenpengfei/harness.git`
+>
+> 若暂不需要此功能，可直接回车跳过（留空）。
+
+记录为：`HARNESS_REPO`（可为空）
+
 ### 写入配置文件
 
-收集完 4 个答案后，创建 `.claude/` 目录（若不存在），然后创建 `.claude/harness-config.json`：
+收集完 5 个答案后，创建 `.harness/` 目录（若不存在），然后创建 `.harness/harness-config.json`：
 
 ```json
 {
@@ -63,7 +73,8 @@
   "techStack": "<TECH_STACK>",
   "techType": "<TECH_TYPE>",
   "teamSize": "<TEAM_SIZE>",
-  "projectStage": "<PROJECT_STAGE>"
+  "projectStage": "<PROJECT_STAGE>",
+  "harnessRepo": "<HARNESS_REPO>"
 }
 ```
 
