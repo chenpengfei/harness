@@ -46,10 +46,12 @@ harness/
 │   └── feedback/                      # F 维度：反馈机制
 │       ├── review-checklist.md        # Code review 检查清单
 │       └── retro-template.md          # 复盘模板
+├── .harness/
+│   └── harness-config.json            # Harness 配置（4 个问题的答案）
 └── .claude/
-    ├── harness-config.json            # Harness 配置（4 个问题的答案）
     ├── commands/
-    │   └── harness.md                 # /harness 更新命令
+    │   ├── harness.md                 # /harness 更新命令
+    │   └── harness-feedback.md        # /harness-feedback 改进反馈命令
     └── skills/
         ├── harness-env.md             # skill：辅助维护环境文档
         ├── harness-knowledge.md       # skill：辅助维护知识文档
@@ -64,7 +66,7 @@ harness/
 
 ### 阶段 0 — 前置检查
 - 确认目标工作目录
-- 检测 `.claude/harness-config.json` 是否存在，判断首次安装或更新
+- 检测 `.harness/harness-config.json` 是否存在，判断首次安装或更新
 - 告知用户即将执行的操作，获得开始许可
 
 ### 阶段 1 — 信息收集
@@ -74,7 +76,7 @@ harness/
 3. **团队规模**：solo / 小团队（2-5人）/ 大团队（6人+）
 4. **项目阶段**：早期探索 / 产品迭代 / 生产运营
 
-收集完成后，将答案写入 `.claude/harness-config.json`。
+收集完成后，将答案写入 `.harness/harness-config.json`。
 
 ### 阶段 2 — E（环境）
 创建 `docs/environment/README.md` 和 `docs/environment/setup.md`，根据技术栈定制内容。
@@ -121,7 +123,7 @@ harness/
 `/harness` 命令内嵌完整更新剧本，安装后离线可用，不依赖外部网络请求。
 
 ### 步骤 1 — 读取现状
-读取 `.claude/harness-config.json`，加载上次安装时记录的 4 个答案。
+读取 `.harness/harness-config.json`，加载上次安装时记录的 4 个答案。
 
 ### 步骤 2 — 重新评估
 重新向用户逐一询问同样的 4 个问题，展示上次的答案，用户可回车确认或输入新值。
@@ -135,13 +137,13 @@ harness/
 向用户展示建议更新的文件清单及变更理由，获得确认后再执行。若无变化，告知"当前配置已是最新，无需更新"。
 
 ### 步骤 5 — 执行更新
-按确认范围更新文件，更新 `.claude/harness-config.json`，打印变更摘要。
+按确认范围更新文件，更新 `.harness/harness-config.json`，打印变更摘要。
 
 ---
 
 ## 数据结构
 
-### `.claude/harness-config.json`
+### `.harness/harness-config.json`
 
 ```json
 {
@@ -154,7 +156,8 @@ harness/
   },
   "techStack": "例如：TypeScript / Next.js / PostgreSQL",
   "teamSize": "solo | small | large",
-  "projectStage": "exploration | iteration | production"
+  "projectStage": "exploration | iteration | production",
+  "harnessRepo": "git@github.com:chenpengfei/harness.git"
 }
 ```
 
