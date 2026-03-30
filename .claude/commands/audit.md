@@ -89,14 +89,14 @@ description: 检查 harness 仓库设计哲学、思想的一致性
 
 ### 原则 2：命令文件不依赖外部 URL
 
-用 Grep 在 `INSTALL.md` 和 `.claude/commands/` 下所有 `.md` 文件中搜索 `http://` 或 `https://`。
+用 Grep 在 `.claude/commands/` 下所有 `.md` 文件中搜索 `http://` 或 `https://`。
 
 若发现外部 URL，记录：`[违反原则 2] <文件名:行号> 含外部 URL：<URL>`
 
 ### 原则 3：INSTALL.md 是单一真相来源
 
 读取 `INSTALL.md` 中的"安装流程地图"表格，提取各 Phase 行的名称和描述。
-读取每个 `docs/install/phase-*.md` 的首行标题（`#` 开头的行）。
+读取每个 `docs/install/phase-*.md` 文件中第一个 `#` 开头的行（一级标题，跳过 YAML front matter）。
 
 若某 phase 文件的标题与 INSTALL.md 对应行描述明显矛盾（如阶段目的不同），记录：
 `[违反原则 3] <phase 文件> 标题与 INSTALL.md 描述不匹配：INSTALL.md 写 "<A>"，文件写 "<B>"`
@@ -105,7 +105,7 @@ description: 检查 harness 仓库设计哲学、思想的一致性
 
 ### 原则 4：文档使用符号名称而非硬链接
 
-用 Grep 搜索所有 `.md` 文件中形如 `](../` 且目标以 `.md)` 结尾的内容，以及形如 `](./` 且目标以 `.md)` 结尾的内容。
+用 Grep 搜索所有 `.md` 文件中以下三种模式的内部链接：`](../`、`](./`、`](/`，且目标以 `.md)` 结尾。排除匹配项中 `](` 后紧跟 `http` 或 `https` 的情况（外部 URL 不在此检查范围内）。
 
 若发现，记录：`[违反原则 4] <文件名:行号> 使用了内部硬链接：<链接完整文本>`
 
@@ -122,10 +122,10 @@ description: 检查 harness 仓库设计哲学、思想的一致性
 
 ### 原则 6：设计变更有对应记录
 
-执行 `git log --oneline -20` 获取最近 20 条提交记录。
+执行 `git log --pretty="%ad %s" --date=short -20` 获取最近 20 条提交记录（格式：`YYYY-MM-DD 提交说明`）。
 用 Glob 读取 `docs/design-docs/` 下所有文件名（格式为 `YYYY-MM-DD-*.md`）。
 
-对每条包含 `feat:` 或 `refactor:` 前缀的提交，检查 `docs/design-docs/` 中是否存在日期相近（提交日期 ±3 天以内）的设计文档。
+对每条包含 `feat:` 或 `refactor:` 前缀的提交，检查 `docs/design-docs/` 中是否存在设计文档，其文件名日期 ≤ 提交日期（设计应先于实现，允许同日）。一份设计文档可覆盖同日期窗口内的多条提交。
 
 若无对应文档，标记为：
 `[需人工确认] 提交 "<提交信息>" 是否需要 docs/design-docs/ 记录？`
