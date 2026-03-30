@@ -54,7 +54,7 @@ description: 记录改进建议并可选提交到 harness 仓库
 
 ### 步骤 5：写入草稿文件
 
-生成 slug：将 `PROPOSAL_TITLE` 转为小写，空格和特殊字符替换为连字符，截取前 40 个字符。
+生成 slug：若标题仅含 ASCII 字符，转为小写并将空格和特殊字符替换为连字符；若标题含中文或其他非 ASCII 字符，使用 `proposal` 作为 slug。截取前 40 个字符。
 
 文件名格式：`<今日日期 YYYY-MM-DD>-<slug>.md`
 
@@ -119,7 +119,7 @@ status: draft
 > 请提供 harness 仓库的 Git 地址：
 > 例如：`git@github.com:chenpengfei/harness.git`
 
-将答案写入 `.harness/harness-config.json` 的 `harnessRepo` 字段，同时更新 `updatedAt` 为当前时间戳。
+先用 Read 读取 `.harness/harness-config.json` 的现有内容，将 `harnessRepo` 字段设为用户输入的地址，将 `updatedAt` 更新为当前时间戳，然后用 Write 完整写回（保留文件中其他所有字段不变）。
 
 ### 步骤 4：提交方式
 
@@ -130,10 +130,16 @@ status: draft
 
 ### 步骤 5A：通过 gh CLI 提交
 
-从 `harnessRepo`（格式：`git@github.com:owner/repo.git`）提取 `owner/repo`：
-去掉 `git@github.com:` 前缀和 `.git` 后缀。
+从 `harnessRepo` 提取 `owner/repo`：
+  - 若格式为 `git@github.com:owner/repo.git`，去掉 `git@github.com:` 前缀和 `.git` 后缀
+  - 若格式为 `https://github.com/owner/repo.git` 或 `https://github.com/owner/repo`，提取路径部分并去掉 `.git` 后缀
 
-对每条选中的建议，读取文件完整内容后执行：
+对每条选中的建议：
+1. 用 Read 读取文件完整内容
+2. 从 frontmatter 提取 `title` 字段作为 `PROPOSAL_TITLE`
+3. 从 `## 背景` 章节下的正文提取 `PROPOSAL_BACKGROUND`
+4. 从 `## 建议改法` 章节下的正文提取 `PROPOSAL_SUGGESTION`
+5. 执行：
 
 ```bash
 gh issue create \
@@ -164,3 +170,13 @@ gh issue create \
 > ## 建议改法
 >
 > \<PROPOSAL_SUGGESTION\>
+
+询问用户是否已提交：
+> 是否已手动创建 Issue？
+> - **是**：将草稿移入 `.harness/submitted/` 存档
+> - **否**：保留在 `.harness/proposals/` 中，下次继续
+
+若用户选择"是"：
+1. `mkdir -p .harness/submitted`
+2. `mv .harness/proposals/<文件名> .harness/submitted/<文件名>`
+3. 输出：`✓ 已存档：.harness/submitted/<文件名>`
