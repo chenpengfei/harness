@@ -64,7 +64,7 @@ description: 检查 harness 仓库设计哲学、思想的一致性
 
 ### 2.2 INSTALL.md 引用完整性
 
-读取 `INSTALL.md`，用 Grep 提取所有 `docs/install/phase-*.md` 格式的路径引用，逐一用 Glob 检查对应文件是否存在。
+读取 `INSTALL.md`，用 Grep 搜索模式 `docs/install/phase-[0-9]+-[a-z-]+\.md` 提取所有 phase 文件路径引用，去重后逐一用 Glob 检查对应文件是否存在。
 
 每个"INSTALL.md 引用但磁盘不存在"的路径记录：
 `[引用断裂] INSTALL.md 引用了 <路径>，但该文件不存在`
