@@ -8,6 +8,20 @@
 
 > **Agent 注意**：通过 WebFetch 或 Read 从 harness 仓库对应路径读取文件内容，完全复制，不做任何修改。
 
+### 6.1.5 创建 .claude/commands/harness-feedback.md
+
+从 harness 仓库读取 `.claude/commands/harness-feedback.md` 并创建到目标项目。
+
+> **Agent 注意**：通过 WebFetch 或 Read 从 harness 仓库对应路径读取文件内容，完全复制，不做任何修改。
+
+### 6.1.8 更新 .gitignore
+
+在目标项目根目录的 `.gitignore` 文件末尾追加以下内容（若 `.gitignore` 不存在则创建）：
+
+    # Harness 改进建议草稿（本地存档，不提交到目标项目代码库）
+    .harness/proposals/
+    .harness/submitted/
+
 ### 6.2 创建 .claude/commands/harness.md
 
 创建 `.claude/commands/` 目录（若不存在），然后创建 `.claude/commands/harness.md`，内容如下（这是用户之后运行 `/harness` 时 Agent 将执行的完整脚本）：
@@ -20,13 +34,13 @@
 
     ### 步骤 1：读取现有配置
 
-    读取 `.claude/harness-config.json`，加载上次记录的配置：
+    读取 `.harness/harness-config.json`，加载上次记录的配置：
     - 项目信息（名称、描述）
     - 技术栈（techStack、techType）
     - 团队规模（teamSize）
     - 项目阶段（projectStage）
 
-    若 `.claude/harness-config.json` 不存在，告知用户：
+    若 `.harness/harness-config.json` 不存在，告知用户：
     > "未找到 Harness 配置文件。请先通过安装流程初始化 Harness。"
     然后停止执行。
 
@@ -84,7 +98,7 @@
     - 找到 Harness 生成的标记区域（如 `<!-- harness:start -->` ... `<!-- harness:end -->`）进行替换
     - 无法确定是否用户自定义内容时，向用户询问
 
-    更新 `.claude/harness-config.json`：
+    更新 `.harness/harness-config.json`：
     - 更新 `updatedAt` 为当前时间戳
     - 更新所有变化的字段
 
@@ -107,9 +121,10 @@
 > **安装的维度**：E（环境）/ K（知识）/ C（约束）/ F（回路）
 >
 > **已创建的文件**：
-> - `.claude/harness-config.json`
+> - `.harness/harness-config.json`
 > - `.claude/commands/commit-push.md`
 > - `.claude/commands/harness.md`
+> - `.claude/commands/harness-feedback.md`
 > - `.claude/skills/harness-env.md`
 > - `.claude/skills/harness-knowledge.md`
 > - `.claude/skills/harness-feedback.md`
@@ -126,4 +141,5 @@
 > **下一步建议**：
 > 1. 填写 `CLAUDE.md` 中的项目结构和关键约定
 > 2. 更新 `docs/environment/README.md` 中的具体命令（若有占位符）
-> 3. 随项目演化，运行 `/harness` 持续更新配置"
+> 3. 随项目演化，运行 `/harness` 持续更新配置
+> 4. 运行 `/harness-feedback` 随时记录实践中发现的改进点"
