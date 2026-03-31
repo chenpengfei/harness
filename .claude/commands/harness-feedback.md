@@ -132,7 +132,7 @@ status: draft
 
 从 `harnessRepo` 提取 `owner/repo`：
   - 若格式为 `git@github.com:owner/repo.git`，去掉 `git@github.com:` 前缀和 `.git` 后缀
-  - 若格式为 `https://github.com/owner/repo.git` 或 `https://github.com/owner/repo`，提取路径部分并去掉 `.git` 后缀
+  - 若格式为 HTTPS 克隆地址（含 `github.com/` 路径），提取 `github.com/` 后的部分并去掉 `.git` 后缀
 
 对每条选中的建议：
 1. 用 Read 读取文件完整内容
@@ -158,7 +158,7 @@ gh issue create \
 ### 步骤 5B：手动提交
 
 对每条选中的建议，展示：
-> 请在 `https://github.com/<owner/repo>/issues/new` 手动创建 Issue：
+> 请前往 harness 仓库（`harnessRepo` 字段对应的 GitHub 仓库）的 Issues 页面，手动创建 Issue：
 >
 > **标题**：\<PROPOSAL_TITLE\>
 >
