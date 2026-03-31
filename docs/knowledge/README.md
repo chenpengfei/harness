@@ -46,7 +46,7 @@ harness/
 
 ## 关键设计决策
 
-所有设计决策记录于 `docs/design-docs/`，参见 [index.md](../design-docs/index.md)。
+所有设计决策记录于 `docs/design-docs/`，参见 `docs/design-docs/index.md`。
 
 主要决策：
 - harness 为**纯内容仓库**，绝不含可执行代码

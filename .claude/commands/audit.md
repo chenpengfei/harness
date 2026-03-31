@@ -73,6 +73,29 @@ description: 检查 harness 仓库设计哲学、思想的一致性
 
 用 Glob 检查 `docs/design-docs/index.md` 是否存在。若不存在，记录：
 `[缺失] docs/design-docs/index.md 不存在`
+若存在，读取索引内容，列出 `docs/design-docs/` 下除 `index.md` 外的所有 `.md` 文件，确认索引文本中包含对每个文件的引用（文件名或标题）。
+缺失时记录：`[缺失索引] docs/design-docs/index.md 未覆盖 <文件名>`
+
+### 2.4 命令-设计-执行闭环
+
+用 Glob 枚举 `.claude/commands/` 目录下所有命令文件，对每个命令 `<name>.md` 执行：
+- 设计文档匹配：检查是否存在 `docs/design-docs/*<name>*` 文件
+- 执行计划匹配：检查是否存在 `docs/exec-plans/completed/*<name>*` 文件
+
+缺失时分别记录：
+- `[缺失地图] 命令 <name> 缺少设计文档（docs/design-docs/*<name>* 未找到）`
+- `[缺失闭环] 命令 <name> 缺少完成的执行计划（docs/exec-plans/completed/*<name>* 未找到）`
+
+### 2.5 E-K-C-F 知识沉淀
+
+检查以下目录是否存在并至少包含一份 `.md` 文档：
+- `docs/environment/`
+- `docs/knowledge/`
+- `docs/constraints/`
+- `docs/feedback/`
+
+每个目录若不存在，记录：`[缺失知识] <目录> 不存在`
+目录存在但未找到 `.md` 文档时，记录：`[缺失知识] <目录> 内缺少文档`
 
 无问题时记录：`✓ 结构完整性检查通过`
 
@@ -89,7 +112,7 @@ description: 检查 harness 仓库设计哲学、思想的一致性
 
 ### 原则 2：命令文件不依赖外部 URL
 
-用 Grep 在 `.claude/commands/` 下所有 `.md` 文件中搜索 `http://` 或 `https://`。
+用 Grep 在 `INSTALL.md` 以及 `.claude/commands/` 下所有 `.md` 文件中搜索 `http://` 或 `https://`。
 
 若发现外部 URL，记录：`[违反原则 2] <文件名:行号> 含外部 URL：<URL>`
 

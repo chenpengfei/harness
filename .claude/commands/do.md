@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git:*), Bash(npm:*), Read, Glob, Grep, Task, AskUserQuestion, TaskCreate, TaskUpdate, TaskList, TaskGet, Skill
+allowed-tools: Bash(git:*), Bash(npm:*), Read, Glob, Grep, Task, AskUserQuestion, TaskCreate, TaskUpdate, TaskList, TaskGet, TaskDelete, TaskComment, Skill
 description: 启动 Agent Team 协调器，分析任务并调度专业 agents 执行
 ---
 
@@ -30,9 +30,15 @@ Read(".claude/skills/agent-team/orchestrator.md")
 
 根据 orchestrator.md 中的流水线表，确定本次任务的完整阶段列表。
 
-### 第 2 步：创建 TaskList（强制，在任何 agent 执行前）
+### 第 2 步：创建/复用 TaskList（强制，在任何 agent 执行前）
 
-**必须用 TaskCreate 为流水线的每个阶段创建任务。** 这是流程的"记忆锚点"。
+1. 先执行 `TaskList` 检查是否有现存任务。
+   - 若 TaskList 为空 → 直接进入任务创建。
+   - 若存在旧任务 → 使用 `AskUserQuestion` 询问用户是**复用并逐条校准**还是**清理后重建**。
+     - **复用**：逐条核对任务状态，必要时用 `TaskUpdate` 将其恢复为待办，并用 `TaskComment` 补充说明。
+     - **清理**：使用 `TaskDelete` 移除失效任务（记录原因），确保列表干净后再新建。
+
+2. **必须用 TaskCreate 为流水线的每个阶段创建任务。** 这是流程的"记忆锚点"。
 
 以 feature 类型为例（其他类型参照 orchestrator.md 的流水线表）：
 
@@ -67,6 +73,28 @@ TaskCreate: #9 PR 合并审批（人类审批）
    ── 继续执行 ──
 ```
 
+若阶段执行中遇到阻塞或失败：
+
+```
+TaskUpdate(当前任务, status: "blocked", notes: "原因简述")
+TaskList ← 展示最新状态
+AskUserQuestion:
+  "阶段 <名称> 被阻塞，下一步如何处理？"
+  选项：
+  - "重试本阶段"
+  - "回退上一阶段"
+  - "暂停等待人工处理"
+```
+
+根据用户选择执行：
+- **重试**：保持 blocked 状态，记录预定重试点。
+- **回退**：对上一阶段执行 `TaskUpdate(..., status: "in_progress")` 并重新按照流程执行。
+- **暂停**：保留 blocked 状态，等待后续指示。
+
+若长时间未得到用户反馈，保持 blocked 状态并在下一次会话开头提醒用户引用任务编号继续处理。
+
+异常处理完毕后，再回到常规三步曲。
+
 ### 第 4 步：实现完成后的强制暂停（阶段 #4）
 
 **这是防止后续阶段被跳过的关键。** 当阶段 #3（代码实现）完成后：
@@ -79,6 +107,8 @@ AskUserQuestion:
   - "继续全部"：测试 → 代码审查 → 安全审计 → 文档更新
   - "仅测试+审查"：跳过安全审计和文档更新
   - "暂停"：用户先手动检查
+
+若在约定时间内未收到回应，执行 `TaskUpdate(#4, status: "blocked", notes: "等待用户确认质量流程")`，输出暂停报告并说明恢复方式（请用户在后续对话中引用任务编号给出指示）。
 ```
 
 **只有用户明确选择后，才继续后续阶段。**
@@ -92,7 +122,7 @@ AskUserQuestion:
 - **#7 安全审计**：`Read(".claude/skills/agent-team/security-auditor.md")` 后按其工作流执行
 - **#8 文档更新**：`Read(".claude/skills/agent-team/documentation-keeper.md")` 后按其工作流执行
 
-其中 #6/#7/#8 可并行执行（如果上下文允许）。
+其中 #6/#7/#8 可并行执行（如果上下文允许）。并行时仍需对每个阶段分别执行完整三步曲，并在进度报告中注明“本轮并行阶段：#6/#7/#8”，逐条列出主要输出，避免遗漏。
 
 **每完成一个阶段都必须执行三步曲（TaskUpdate → TaskList → 进度报告）。**
 

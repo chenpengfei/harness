@@ -8,4 +8,4 @@
 | [2026-03-29-do-command-design.md](2026-03-29-do-command-design.md) | 2026-03-29 | 已批准 | `/do` 命令与 Agent Team 设计：多 Agent 协作流水线，含三个人类审批检查点 |
 | [2026-03-29-audit-command-design.md](2026-03-29-audit-command-design.md) | 2026-03-29 | 已批准 | `/audit` 命令设计：哲学一致性审查，检查术语、结构与原则遵守 |
 | [2026-03-29-commit-push-design.md](2026-03-29-commit-push-design.md) | 2026-03-29 | 已批准 | `/commit-push` 命令设计：自动提交并推送到远端 |
-| [2026-03-29-harness-design.md](2026-03-29-harness-design.md) | 2026-03-29 | 已批准 | Harness 安装系统整体设计：E-K-C-F 四维度、阶段式安装、无运行时依赖 |
+| [2026-03-29-harness-design.md](2026-03-29-harness-design.md) | 2026-03-29 | 已批准 | Harness 安装系统整体设计：E-K-C-F 四维度、阶段式安装、安装后无运行时依赖 |
