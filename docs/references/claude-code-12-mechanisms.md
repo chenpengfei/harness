@@ -7,15 +7,15 @@
 ## 被包裹的对象：最小 Agent 循环
 
 ```
-用户 → messages[] → Claude API → response
+用户 → messages[] → Claude API → 流式响应
                                     |
-                          stop_reason == "tool_use"?
-                         /                          \
-                       yes                           no
-                        |                             |
-                  执行工具                          返回文本
+                       流中出现 tool_use 块?
+                         /                  \
+                       yes                   no（end_turn）
+                        |                       |
+                  执行工具                    返回文本
                   追加 tool_result
-                  继续循环 ──────────────→ messages[]
+                  继续循环 ──────────→ messages[]
 ```
 
 > "That is the minimal agent loop. Claude Code wraps this loop with a production-grade harness: permissions, streaming, concurrency, compaction, sub-agents, persistence, and MCP."
@@ -33,8 +33,9 @@
 `while(true)` 循环调用 Claude API，检测 `tool_use` 事件，执行工具，追加 `tool_result`，继续下一轮。这是 Agent 系统不可再化简的内核。
 
 **源码细节**：
-- 循环通过**流式检测** `tool_use` 事件触发工具调用，而非等待完整响应后检查 `stop_reason`——这意味着工具调用在 Claude 输出过程中即开始处理，延迟更低。
-- `stop_reason == "end_turn"` 才是真正的循环退出条件；`tool_use` 是循环延续的信号。
+- 循环通过**流式检测** `tool_use` 块触发工具调用，设置内部 `needsFollowUp = true` 标志，而非等待 API 返回后检查 `stop_reason` 字段——工具调用在 Claude 输出过程中即开始处理，延迟更低。
+- `stop_reason == "end_turn"` 才是真正的循环退出条件；`stop_reason == "tool_use"` 在实现中实际上不被直接使用。
+- **错误处理三层梯级**：`FallbackTriggeredError`（清空孤立消息，切换备用模型重试）→ `max_output_tokens`（三次重试，逐步升级到 `ESCALATED_MAX_TOKENS`）→ `prompt_too_long`（触发 reactive compact 压缩后继续）。
 
 **设计意义**：理解这个循环，后续所有机制都可以被理解为"如何在不改变循环的前提下扩展它"。
 
@@ -49,8 +50,11 @@
 所有工具注册到调度表（dispatch map），Loop 通过工具名查表调用。`buildTool()` 工厂函数提供安全默认值，开发者只需实现业务逻辑。添加 40 个工具，Loop 代码一行不变。
 
 **源码细节**：
-- 每个 Tool 对象包含 `inputSchema`（JSON Schema）、`call()` 处理函数、权限检查钩子。
-- `buildTool()` 工厂注入统一的错误处理和权限拦截，业务逻辑不需要重复实现。
+- `buildTool()` 工厂注入 `TOOL_DEFAULTS`：`isEnabled → true`、`isConcurrencySafe → false`（假设不可并发）、`isReadOnly → false`（假设有写入）、`checkPermissions → allow`。业务代码只覆盖需要改变的字段。
+- `assembleToolPool()` 合并内置工具 + MCP 工具后**按名称字母序排序**，确保每次生成的工具列表顺序一致，最大化提示缓存命中率。
+- `filterToolsByDenyRules()` 在渲染 API 请求前过滤黑名单工具，模型完全看不到被拒绝的工具——防止模型尝试调用无权限的工具。
+- `isConcurrencySafe(input)` 返回 `true` 的工具（如只读工具）可被 `StreamingToolExecutor` 并发执行；返回 `false` 的工具串行执行，保护写操作。
+- 每个 Tool 对象还包含 React/Ink 渲染方法（`renderToolUseMessage`、`renderToolResultMessage`），负责终端 UI 的可视化输出——工具不仅是执行者，也是完整的 UI 单元。
 
 **设计意义**：Loop 与 Tool 完全解耦。工具是能力的容器，Loop 是调度器，两者互不感知具体细节。
 
@@ -62,14 +66,16 @@
 
 **实现**：`EnterPlanModeTool` + `ExitPlanModeTool` + `TodoWriteTool`
 
-强制 Agent 在执行前先将目标分解成步骤列表：EnterPlanMode（锁定，禁止直接执行工具）→ 列步骤 → 确认 → ExitPlanMode（解锁）→ 按计划逐步执行。计划写到磁盘文件，不消耗 `messages[]` 上下文。
+强制 Agent 在执行前先将目标分解成步骤列表：EnterPlanMode（锁定，禁止直接执行写操作工具）→ 列步骤 → 确认 → ExitPlanMode（解锁）→ 按计划逐步执行。
 
 **声称效果**：将任务完成率翻倍（doubles completion rate）。
 
 **源码细节**：
-- 计划模式通过**权限系统状态机**实现锁定：`EnterPlanModeTool` 设置全局权限标志，所有写操作类工具在此标志激活时返回 `"permission denied"`；`ExitPlanModeTool` 清除该标志。
-- 状态机路径：`default → plan_mode（只读）→ default（可执行）`，Agent 无法跳过规划阶段直接执行。
-- `TodoWriteTool` 将 checklist 写入磁盘 JSON 文件，`messages[]` 中只记录"已写入文件"的事实，不含完整任务内容，节省上下文预算。
+- 计划模式通过**权限系统状态机**实现锁定：`EnterPlanModeTool` 在 `AppState.toolPermissionContext` 中设置 `mode: 'plan'`，保存旧模式到 `prePlanMode`；此后所有写操作类工具的 `checkPermissions()` 返回拒绝。`ExitPlanModeTool` 恢复 `mode: prePlanMode ?? 'default'`。
+- `EnterPlanMode` 的 `tool_result` 直接包含明确指令：`"Entered plan mode. DO NOT write or edit any files..."`，同时列出 5 步规划流程要求——指令写在 tool_result 而非 system prompt，确保 Agent 在切换时看到。
+- **TodoWriteTool 存储位置**：`todos` 写入 **`AppState`**（内存状态），按 `agentId` 隔离，支持多 Agent 并发使用；不写磁盘，会随上下文压缩而丢失（这是设计意图：todo 是"当前规划的进度"，不是跨会话持久化的目标）。
+- **团队审批流**：团队成员调用 `ExitPlanMode` 时，若 `isPlanModeRequired()` 为 true，则构建 `plan_approval_request` 消息写入共享邮箱，异步等待 Lead Agent 审批；Lead 审批/拒绝通过 `SendMessageTool` 回应，不阻塞主循环。
+- **AutoMode 熔断器**：从 plan 模式恢复时，若旧模式为 `'auto'` 但 `isAutoModeGateEnabled()` 为 false，则降级恢复到 `'default'`——防止意外激活自动权限模式。
 
 **设计意义**：将全局目标显式化。没有规划的 Agent 在长任务中会"漂移"——每次工具调用都是局部最优，累积下来偏离目标。
 
@@ -81,11 +87,14 @@
 
 **实现**：`AgentTool` + `forkSubagent.ts`
 
-每个子 Agent 获得全新的空 `messages[]`，主 Agent 的长历史不污染子任务执行。主 Agent 对话历史越长，每次 API 调用越贵、越慢、模型注意力越分散。
+每个子 Agent 获得独立的 `messages[]`，主 Agent 的长历史不污染子任务执行。主 Agent 对话历史越长，每次 API 调用越贵、越慢、模型注意力越分散。
 
 **源码细节**：
-- `forkSubagent.ts` 使用**统一占位符文本**（uniform placeholder text）作为 system prompt 前缀，使所有子 Agent 的 prompt 结构相同，命中 Anthropic 服务端的**提示缓存**（prompt cache）——多个并发子 Agent 共享同一批缓存的 token，大幅降低 API 费用。
-- 子 Agent 的 system prompt = 占位符前缀 + 任务专属指令；占位符部分跨调用不变，是缓存命中的关键。
+- **Fork 子 Agent 的初始消息不是空的**：`forkSubagent.ts` 的 `buildForkedMessages()` 为 fork 子 Agent 构建最小化但有意义的初始历史：`[完整助手消息（含所有 tool_use 块）, 用户消息（所有 tool_use 对应的占位符 tool_result + 任务指令）]`。这比空历史更有效，因为子 Agent 有上下文知道自己是谁、被派来做什么。
+- **提示缓存共享的关键设计**：所有 fork 子 Agent 的 `tool_result` 块使用**相同的占位符文本** `'Fork started — processing in background'`，与父消息的助手部分（相同）一起构成所有 fork 请求的公共前缀——所有并发子 Agent 命中同一批提示缓存，大幅降低 API 费用。只有最后的任务指令文本不同，缓存失效范围最小。
+- **子 Agent 指令设计**：`buildChildMessage()` 生成的指令以 `"STOP. READ THIS FIRST."` 开头，列出 10 条不可违反规则（不要派生子代理、不要插话、工具静默调用、500 词内报告等），输出格式固定为 `Scope / Result / Key files / Files changed / Issues`。
+- **`setAppState` 对异步子 Agent 是 no-op**：异步 Agent 的 `setAppState()` 被替换为空操作，防止子 Agent 修改父进程的权限模式（如从 plan mode 中意外退出）。
+- **非 fork 子 Agent**（通过 Task/AgentTool 创建）获得 `messages: []` 真正的空历史，与 fork 子 Agent 不同。
 
 **与 s03 配合**：规划（s03）决定分解成哪些步骤，子 Agent（s04）用干净上下文执行每步。
 
