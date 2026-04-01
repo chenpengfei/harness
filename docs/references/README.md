@@ -16,6 +16,9 @@ Harness 设计的理论与实践来源。
   > "A specification for adding human and machine readable meaning to commit messages."
   > 基于提交消息的轻量级约定，提供结构化规则以创建清晰的提交历史，与 SemVer 配合实现自动化版本管理。完整规范见 `docs/references/conventional-commits-v1.0.0.md`。
 
+- sanbuphy，[claude-code-source-code](https://github.com/sanbuphy/claude-code-source-code)（`@anthropic-ai/claude-code` v2.1.88 逆向解析），2025年
+  > Claude Code 约 1884 个 TypeScript 源文件的逆向工程版本。基于此整理的 12 个 Harness 机制源码解读见 `docs/references/claude-code-12-mechanisms.md`。
+
 - 宝玉，[从写代码到管 Agent：斯坦福首门 AI 软件开发课的讲师说，大多数工程师还没准备好](https://mp.weixin.qq.com/s/Jq6Rgr0DZSneVn_TdWbMpw)，2026年2月28日
   > "Agent 只能基于显式定义的合约来运作。如果你没有足够的测试覆盖，你就没有给你的软件定义合约。"
   > Agent 友好的代码库，其实就是对人也友好的代码库。好的工程实践没有变，只是在 Agent 时代变成了硬性要求。
