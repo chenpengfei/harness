@@ -152,6 +152,32 @@
     - 更新 `updatedAt` 为当前时间戳
     - 更新所有变化的字段
 
+    ### 步骤 5.5：刷新 Harness 命令文件
+
+    从配置中读取 `harnessRepo` 字段：
+
+    **若 `harnessRepo` 为空**，打印提示并跳过本步骤：
+    > "未配置 harnessRepo，跳过命令文件刷新。如需同步最新命令，请在 `.harness/harness-config.json` 中填写 `harnessRepo` 字段。"
+
+    **若 `harnessRepo` 非空**，先构造 raw 文件 URL 的前缀：
+    - 若格式为 `git@github.com:owner/repo.git`，提取 `owner/repo`，前缀为 `https://raw.githubusercontent.com/owner/repo/main`
+    - 若格式为 HTTPS 地址（含 `github.com/`），提取 `github.com/` 后的 `owner/repo`（去掉 `.git` 后缀），前缀同上
+
+    再通过 WebFetch 依次拉取以下文件，并覆盖目标项目中对应文件（强制覆盖，不保留旧版本）：
+
+    | 拉取路径（拼接到前缀后） | 目标工程路径 |
+    |----------------------|------------|
+    | `/.claude/commands/commit.md` | `.claude/commands/commit.md` |
+    | `/.claude/commands/push.md` | `.claude/commands/push.md` |
+    | `/.claude/commands/harness-feedback.md` | `.claude/commands/harness-feedback.md` |
+    | `/.claude/hooks/validate-commit-msg.py` | `.claude/hooks/validate-commit-msg.py` |
+
+    若某个文件 WebFetch 失败（网络错误、仓库私有等），记录该文件路径，继续处理其余文件；所有文件处理完毕后，在步骤 6 的摘要中汇报哪些文件刷新失败。
+
+    > **说明**：上述文件由 harness 统一维护，目标项目不应手动修改，每次 `/harness` 更新时强制覆盖以获取最新版本。
+
+    > **注意**：`harness.md`（本命令自身）在当前执行中无法自我更新，下次运行 `/harness` 时才会使用新版本。若需立即生效，可在获取到 `harness.md` 的最新内容后手动覆盖 `.claude/commands/harness.md`。
+
     ### 步骤 6：打印摘要
 
     > "Harness 更新完成。
