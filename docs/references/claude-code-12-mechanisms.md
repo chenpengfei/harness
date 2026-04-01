@@ -244,30 +244,21 @@
 
 **实现**：`coordinator/coordinatorMode.ts`
 
-协调者模式的核心循环：
+协调者模式定义了 Coordinator 的工作角色和工作流：
 
 ```
-while (true) {
-  tasks = TaskList()
-  available = tasks.filter(t =>
-    t.status === "pending" &&
-    t.owner === null &&
-    t.blockedBy.every(dep => dep.status === "completed")
-  )
-  if (available.length > 0) {
-    task = available[0]  // 按 ID 顺序优先
-    TaskUpdate(task.id, { owner: myName, status: "in_progress" })
-    execute(task)
-    TaskUpdate(task.id, { status: "completed" })
-  } else {
-    idle()
-  }
-}
+Research（Workers 并行）→ Synthesis（Coordinator 理解发现）
+  → Implementation（Workers 执行）→ Verification（Workers 验证）
 ```
+
+Worker 结果以 XML 格式传入 Coordinator 的用户消息，Coordinator 在 Synthesis 阶段必须**主动理解**（而非委托理解），生成有具体文件路径和行号的实施方案，再派发 Workers 执行。
 
 **源码细节**：
-- `coordinatorMode.ts` 是**编译时 feature gate** 控制的功能：该模块通过编译标志决定是否激活，而非运行时配置——这意味着在标准发布版中此模式不可见，只在特定构建目标中启用。
-- 任务认领使用乐观锁（optimistic locking）语义：两个队员同时认领同一任务时，后到者的 `TaskUpdate` 会因版本冲突失败，需重新扫描任务列表。
+- **双层 feature gate**：`isCoordinatorMode()` 同时检查 **`feature('COORDINATOR_MODE')`**（编译时死代码消除）和**环境变量 `CLAUDE_CODE_COORDINATOR_MODE`**（运行时开关）——两者都需为 true 才激活，标准发布版不可见。
+- **会话恢复**：`matchSessionMode()` 恢复会话时若模式不匹配，会自动翻转 `CLAUDE_CODE_COORDINATOR_MODE` 环境变量使其与保存的会话模式一致。
+- **任务扫描由提示驱动**，不是独立后台线程：Coordinator 的 system prompt 描述了扫描-合成-派发-验证四阶段，Coordinator 在每轮 Loop 迭代中自主决策派发哪些 Workers。
+- **Scratchpad 门控**：`isScratchpadGateEnabled()` 为 true 时，Workers 可在专用目录读写不触发权限提示，用于传递中间结果。
+- **反模式告警**：system prompt 明确标记 `"Based on your findings"` 为懒惰委托反模式——Coordinator 必须亲自理解 Worker 报告，而非再派一个 Worker 来理解。
 
 **从 s09 的演进**：Lead Agent 从"微观指派每个任务"解放为"只关注任务拆分和依赖关系的正确性"。
 
@@ -300,8 +291,13 @@ while (true) {
 两者通过 Task ID 绑定，关注点完全分离。
 
 **源码细节**：
-- **清理保护**：worktree 清理脚本使用**正则模式**匹配 harness 自动创建的 worktree 名称（如 `task-\d+`），只删除符合模式的目录，显式跳过用户手动命名的 worktree——防止误删用户工作区。
-- **无自动合并**：`ExitWorktreeTool` 只提供两种策略：`keep`（保留 worktree 供人工处理）或 `remove`（直接删除）。没有自动 merge 逻辑——合并是有歧义的操作，Claude Code 选择不替用户做这个决策。
+- **路径安全**：`validateWorktreeSlug()` 验证 slug 防止路径穿越攻击；支持用户自定义 VCS hook（`hasWorktreeCreateHook()`），允许替换默认 git 实现。
+- **Sparse-checkout 支持**：大型仓库可在创建 worktree 时应用 sparse-checkout，只检出相关路径（`usedSparsePaths` 记录是否已应用），大幅减少 I/O。
+- **清理的三层架构**：
+  1. Runtime（`ExitWorktreeTool`）：用户触发，`remove` 策略需显式设置 `discard_changes: true` 才能删除有未提交改动的 worktree——fail-closed 设计。
+  2. Session（`gracefulShutdown`）：会话正常退出时自动清理本次会话创建的 worktree。
+  3. Background（30 天扫描）：`cleanupStaleAgentWorktrees()` 按**正则模式**识别临时 worktree（`/^agent-a[0-9a-f]{7}$/`、`/^wf_[0-9a-f]{8}-[0-9a-f]{3}-\d+$/`、`/^bridge-[A-Za-z0-9_]+/`），跳过用户自命名 worktree；任何 git 命令失败则拒绝删除（fail-closed）。
+- **无自动合并**：`ExitWorktreeTool` 只提供 `keep`（保留）或 `remove`（删除）；`remove` 前检查未提交文件数和未推送提交数，需用户明确确认才能丢弃。合并决策留给人类。
 
 **设计意义**：并行 Agent 的文件系统冲突终极解决方案。
 
