@@ -108,15 +108,18 @@
 
 **实现**：`SkillTool` + `memdir/` + 懒加载 `CLAUDE.md`
 
-知识通过 `tool_result` 注入到 `messages[]`，而不是写死在 `system prompt`。`CLAUDE.md` 懒加载：Agent 进入某目录时才加载该目录的 `CLAUDE.md`，而非启动时全量加载。
+知识按需注入，而不是写死在 `system prompt`。`CLAUDE.md` 懒加载：Agent 进入某目录时才加载该目录的 `CLAUDE.md`，而非启动时全量加载。相关记忆在每轮对话前作为**用户消息上下文**注入。
 
 两种错误方式：
 - ❌ 全量塞入 system prompt → 上下文浪费，无关知识干扰推理
 - ❌ 不提供知识 → Agent 凭空猜测，产生幻觉
 
 **源码细节**：
-- `memdir/` 中的记忆检索使用 **Sonnet 模型**（非当前对话模型）通过 `sideQuery()` 函数执行语义选择：给定当前任务描述，Sonnet 从记忆索引中选出最相关的记忆文件，再由 SkillTool 加载其内容注入到主对话。
-- 这意味着知识检索是一次独立的 API 调用（`sideQuery`），不在主对话的 `messages[]` 中留下痕迹。
+- **两阶段记忆加载**：① `loadMemoryPrompt()` 在系统提示构建时同步执行（`fs.readFileSync`，每会话一次，有缓存），将 `MEMORY.md` 入口文件注入系统提示；② `findRelevantMemories()` 在每 N 轮前扫描所有 `.md` 文件，调用 **Sonnet（`sideQuery()`）** 从中选出最多 5 个相关记忆，作为用户消息上下文注入——是用户消息，不是 tool_result。
+- **扫描限制**：`MAX_MEMORY_FILES = 200`，按 mtime 倒序（最新优先）；扫描时只读每个文件的前 **30 行**（`FRONTMATTER_MAX_LINES`）提取 frontmatter，避免加载整文件。
+- **MEMORY.md 截断**：行限制 **200 行**（`MAX_ENTRYPOINT_LINES`），字节限制 **25KB**（`MAX_ENTRYPOINT_BYTES`）；先行截断，再字节截断，防止长行绕过行限制。
+- **`sideQuery()` 的隔离性**：Sonnet 选择调用是一次独立 API 调用，结果不出现在主对话的 `messages[]` 中；选择失败时回退空列表。
+- **CLAUDE.md 独立加载**：CLAUDE.md 不在 memdir 系统中，由独立路径按目录层级懒加载。
 
 **设计意义**：知识是动态的、按需替换的；system prompt 是静态全局配置。
 
@@ -137,9 +140,12 @@
 | contextCollapse | 重新组织整个对话结构，高密度压缩 | 较高 | `CONTEXT_COLLAPSE` |
 
 **源码细节**：
-- **触发阈值**：`autoCompact` 在 `当前 token 数 > context_window - 13000` 时触发——预留 13K token 作为安全余量，确保压缩请求本身有足够空间完成。
-- **熔断机制**：连续压缩失败 3 次后激活 **circuit breaker**，停止自动压缩并告警，避免在不可压缩的对话中无限重试浪费 API 调用。
-- 压缩后的摘要以特殊标记写入 `messages[]` 头部，Loop 无需任何感知，直接使用压缩后的历史继续对话。
+- **触发阈值**：`autoCompact` 在 `当前 token 数 ≥ context_window - 13000` 时触发；警告阈值为 `context_window - 20000`（更早提示用户）。
+- **熔断机制**：连续压缩失败 3 次后激活 **circuit breaker**，停止自动压缩，避免在不可压缩的对话中无限重试浪费 API 调用。
+- **压缩前预处理**：① 剥离图像块（避免 API 过载）；② 剥离重新注入的附件（`skill_discovery`、`skill_listing` 等），防止摘要请求本身超限。
+- **压缩后文件恢复**：压缩完成后立即重新注入最多 **5 个文件**（总预算 **50K token**，每个 5K）+ 最多 **5 个技能**（总预算 **25K token**，每个 5K，超限有截断标记）——确保 Agent 压缩后仍能访问关键上下文。
+- **Prompt-too-long 重试**：若压缩请求本身超限，`truncateHeadForPTLRetry()` 按 API 轮次分组，删除最旧 ~20% 的消息组，加入 PTL_RETRY_MARKER 后重试，最多 2 次（指数退避）。
+- 压缩后的边界标记（`CompactBoundaryMessage`）写入 `messages[]` 头部，Loop 无需任何感知，直接使用压缩后的历史继续对话。
 
 **设计意义**：上下文窗口是 Agent 的工作内存，是有限资源，必须主动管理。
 
@@ -152,6 +158,10 @@
 **实现**：`TaskCreate` + `TaskUpdate` + `TaskGet` + `TaskList`
 
 任务图写到磁盘，完全独立于 `messages[]`。数据结构包含 `id`、`subject`、`status`（pending → in_progress → completed）、`blockedBy`、`blocks`、`owner`。
+
+**注意**：源码中存在两个不同的任务系统：① **项目管理任务**（`TaskCreate/TaskUpdate/TaskList/TaskGet` 工具，写到 `~/.claude/tasks/` 目录的磁盘文件，s07 讲的是这个）；② **运行时执行任务**（`AppState.tasks` 内存对象，追踪正在运行的 Shell、Agent、DreamTask 等，s08 讲的是这个）。两者通过 Task ID 关联但互相独立。
+
+运行时任务 ID 使用**前缀系统**：`b`（bash）、`a`（agent）、`r`（remote）、`t`（teammate）、`w`（workflow）、`m`（MCP monitor）、`d`（dream）+ 8 位随机字母数字，总长 9 字符，~2.8 万亿组合。
 
 **与 s03 的区别**：
 
@@ -171,21 +181,29 @@
 
 **实现**：`DreamTask`（抽象基类）+ `LocalShellTask`（本地 Shell 实现）
 
-后台守护线程运行慢操作，完成时将通知反馈给主循环。
+后台守护线程（fork agent）运行慢操作，完成时通过 AppState 更新 UI。
 
 ```
-主循环 → 派发 LocalShellTask（构建命令）→ 继续做其他事
-                 ↓（后台守护线程）
-                 运行中...完成
-                 → 通知主循环
-主循环下一次迭代看到通知 → 处理结果
+主线程
+  ↓ detectConsolidationNeeded() → spawnDreamAgent()（fork）
+  └─ 继续响应用户
+         ↓（fork 在后台独立运行）
+         Dream Agent Loop（Gather → Consolidate → Edit/Write）
+              ↓ 每轮：onTurnComplete → addDreamTurn → setAppState
+         AppState.tasks[taskId].turns 更新
+         React 订阅刷新 UI（底部药丸显示进度）
+         ↓ 完成
+completeDreamTask() → notified=true → 药丸消失
 ```
 
 **源码细节**：
-- 后台任务完成后，通知通过 **`AppState`**（全局应用状态）而非直接写入 `messages[]` 来传递——主循环在每次迭代开始时读取 AppState 中的待处理通知，再将其转换为 `tool_result` 形式注入到对话中。
-- 这一设计将"何时通知"的决策权交给主循环（拉模式），而非后台任务直接推送，避免了线程竞争问题。
+- **通知路径是纯 UI，不进入 messages[]**：后台任务完成后，通知通过 `AppState.tasks` 变化触发 React UI 刷新（底部"Dreams"状态药丸、Shift+Down 对话框），不向 `messages[]` 注入任何 `tool_result`——**主循环（模型）永远不会直接看到后台任务的完成**。
+- 这与原先理解不同：AppState 是 UI 状态驱动，不是消息队列。
+- **DreamTask 的特殊结构**：包含最多 **30 个轮次的环形缓冲**（`turns` 数组），最旧的轮次被驱逐；记录 `filesTouched`（Edit/Write 工具触及的文件）；`phase` 字段：`'starting'` → `'updating'`。
+- **中止安全**：`Task.kill()` 调用 `abortController.abort()`，并回滚 consolidation 锁文件的 mtime，允许下一会话重试（幂等设计）。
+- **`DreamTask` vs `LocalShellTask`**：DreamTask 运行的是分叉 Agent 循环；LocalShellTask 运行的是本地 Shell 命令。两者都继承统一的 `Task` 接口（`kill()` 方法），但通知机制相同：均通过 AppState，不向主对话注入消息。
 
-**设计意义**：慢 I/O 不阻塞主循环，且完全符合 Loop 统一数据流模型。
+**设计意义**：慢 I/O 不阻塞主循环。与 s01–s07 不同，后台任务是 Claude Code 的**唯一不经过 messages[] 的机制**——它存在于对话之外，属于 UI 层，而非 Agent 认知层。
 
 ---
 
