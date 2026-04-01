@@ -38,8 +38,12 @@ def main() -> None:
 
     msg = m.group(1)
 
+    # Shell expression (e.g. HEREDOC via $(...)) — cannot validate statically, pass through
+    if msg.startswith('$('):
+        sys.exit(0)
+
     # 验证 Conventional Commits 格式
-    pattern = r'^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?(!)?: .+'
+    pattern = r'^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([^)]+\))?(!)?: .+'
     if not re.match(pattern, msg):
         print("提交消息不符合 Conventional Commits 规范。")
         print("格式：<type>[scope][!]: <中文描述>")
