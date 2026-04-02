@@ -1,4 +1,4 @@
-# Phase 5：F — 回路
+# Phase 5：F — 反馈
 
 **Agent 执行步骤：**
 
@@ -114,12 +114,12 @@
     - [ ] 有没有文档需要更新？（运行 `/harness` 重新评估）
     - [ ] 有没有新的编码约束需要加入 `.harness/constraints/`？
     - [ ] Agent 执行质量如何？有没有明显的知识缺口？
-    - [ ] 回路是否有效？
+    - [ ] 反馈是否有效？
 
 ### 5.5 确认点
 
 向用户展示已创建的文件：
-> "F（回路）维度安装完成，创建了以下文件：
+> "F（反馈）维度安装完成，创建了以下文件：
 > - `.harness/feedback/review-checklist.md`
 > - `.harness/feedback/retro-template.md`
 >

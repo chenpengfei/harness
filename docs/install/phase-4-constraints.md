@@ -135,6 +135,6 @@
 > - `.harness/constraints/README.md`
 > - `.harness/constraints/coding-rules.md`
 >
-> 是否继续安装 F（回路）维度？"
+> 是否继续安装 F（反馈）维度？"
 
 等待确认后继续 Phase 5。

@@ -7,7 +7,7 @@
 
 ## 概述
 
-Harness 是一个 Agent-First 工程支架脚手架。用户将本仓库的 GitHub 地址提供给 Agent，Agent 通过读取 `INSTALL.md` 并按剧本执行，在目标工程中安装 E-K-C-F（环境、知识、约束、回路）四个维度的工程能力。安装完成后，目标工程中会生成 `/harness` 命令，用户随时可运行该命令对 Harness 能力进行重新评估和更新。
+Harness 是一个 Agent-First 工程支架脚手架。用户将本仓库的 GitHub 地址提供给 Agent，Agent 通过读取 `INSTALL.md` 并按剧本执行，在目标工程中安装 E-K-C-F（环境、知识、约束、反馈）四个维度的工程能力。安装完成后，目标工程中会生成 `/harness` 命令，用户随时可运行该命令对 Harness 能力进行重新评估和更新。
 
 ---
 
@@ -93,7 +93,7 @@ harness/
 创建 `docs/constraints/README.md` 和 `docs/constraints/coding-rules.md`，根据项目阶段调整严格程度（早期探索宽松，生产运营严格）。
 完成后展示文件清单，确认后继续。
 
-### 阶段 5 — F（回路）
+### 阶段 5 — F（反馈）
 创建 `docs/feedback/review-checklist.md` 和 `docs/feedback/retro-template.md`，根据团队规模调整内容深度（solo 简化，大团队完整）。
 创建 `.claude/skills/harness-feedback.md`。
 完成后展示文件清单，确认后继续。

@@ -13,7 +13,7 @@
 | **E** — 环境 | Environment | Agent 可运行、调试、测试、观察系统 |
 | **K** — 知识 | Knowledge | 文档和设计决策在仓库内可检索可维护 |
 | **C** — 约束 | Constraints | 架构规则约束演化方向 |
-| **F** — 回路 | Feedback | 日志、指标、评审直接反馈给 Agent |
+| **F** — 反馈 | Feedback | 日志、指标、评审直接反馈给 Agent |
 
 ---
 
