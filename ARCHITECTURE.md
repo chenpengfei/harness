@@ -32,13 +32,13 @@ harness/
 └── docs/
     ├── design-docs/    # 设计文档
     ├── exec-plans/     # 执行计划
-    ├── references/     # 参考文献
-    └── install/        # INSTALL.md 各阶段详细剧本
+    └── references/     # 参考文献
+└── install/        # INSTALL.md 各阶段详细剧本
 ```
 
 **INSTALL.md** 是整个系统的入口点，也是最重要的文件。Agent 读取它、按剧本在目标项目中安装能力。安装完成后 harness 仓库与目标项目之间安装后无依赖。
 
-**`docs/install/`** 把 INSTALL.md 的每个安装阶段拆分为独立文件（`phase-0-preflight.md` 至 `phase-7-agent-team.md`），供 INSTALL.md 引用或 Agent 按需读取。
+**`install/`** 把 INSTALL.md 的每个安装阶段拆分为独立文件（`phase-0-preflight.md` 至 `phase-7-agent-team.md`），供 INSTALL.md 引用或 Agent 按需读取。
 
 **`.harness/`** 存放 harness 仓库自身的 E-K-C-F 四维度文档，同时作为目标项目安装时的内容模板。安装过程（Phase 1）通过 git sparse-checkout 将此目录拉取到目标项目，后续各阶段在此基础上定制内容。
 
@@ -50,7 +50,7 @@ harness/
 
 ## 架构不变式
 
-- **INSTALL.md 是单一真相来源**。`docs/install/` 下的阶段文件服务于 INSTALL.md，INSTALL.md 是安装行为的权威定义。两者出现矛盾时，以 INSTALL.md 为准。
+- **INSTALL.md 是单一真相来源**。`install/` 下的阶段文件服务于 INSTALL.md，INSTALL.md 是安装行为的权威定义。两者出现矛盾时，以 INSTALL.md 为准。
 
 - **内容不链接代码**。文档中使用符号名称（文件名、模块名）而非硬链接，避免链接失效。
 

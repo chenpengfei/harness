@@ -20,7 +20,7 @@ git status
 git diff
 
 # 预览文件结构
-ls docs/install/
+ls install/
 ls .claude/commands/
 ls .claude/skills/agent-team/
 ls .harness/

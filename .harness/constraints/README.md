@@ -32,7 +32,7 @@
 |------|------|------|
 | 设计文档 | `docs/design-docs/YYYY-MM-DD-<name>-design.md` | `2026-03-29-do-command-design.md` |
 | 执行计划 | `docs/exec-plans/completed/YYYY-MM-DD-<name>.md` | `2026-03-29-do-command.md` |
-| Phase 文件 | `docs/install/phase-N-<slug>.md` | `phase-3-knowledge.md` |
+| Phase 文件 | `install/phase-N-<slug>.md` | `phase-3-knowledge.md` |
 
 ---
 

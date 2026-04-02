@@ -38,10 +38,10 @@ harness/
 │   │   └── push.md        # /push — 推送到远程
 │   └── skills/agent-team/ # /do 命令使用的 Agent 专业技能
 └── docs/
-    ├── install/           # 8 个安装阶段的详细指引（Phase 0-7）
     ├── design-docs/       # 设计决策文档（含 index.md）
     ├── exec-plans/        # 执行计划（active/ 和 completed/）
     └── references/        # 外部参考资料
+└── install/               # 8 个安装阶段的详细指引（Phase 0-7）
 ```
 
 ---
@@ -59,4 +59,4 @@ harness/
 
 ## 安装流程概览
 
-INSTALL.md 将安装分为 8 个阶段（Phase 0–7），每阶段对应 `docs/install/` 下的详细指引文件。详见 INSTALL.md 的安装流程地图表格。
+INSTALL.md 将安装分为 8 个阶段（Phase 0–7），每阶段对应 `install/` 下的详细指引文件。详见 INSTALL.md 的安装流程地图表格。

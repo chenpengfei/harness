@@ -32,7 +32,7 @@
                                         ↓
                           docs/design-docs/ 设计更新
                                         ↓
-                          docs/install/phase-*.md 实现
+                          install/phase-*.md 实现
 ```
 
 ---
