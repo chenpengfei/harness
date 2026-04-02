@@ -4,9 +4,9 @@
 
 根据 `TEAM_SIZE` 调整内容深度：solo 使用简化版，small/large 使用完整版。
 
-### 5.1 创建 docs/feedback/ 目录
+### 5.1 创建 .harness/feedback/ 目录
 
-### 5.2 创建 docs/feedback/review-checklist.md
+### 5.2 创建 .harness/feedback/review-checklist.md
 
 **如果 TEAM_SIZE = solo：**
 
@@ -42,7 +42,7 @@
 
     ## 代码质量
     - [ ] 可读性和自文档性
-    - [ ] 是否遵循 `docs/constraints/coding-rules.md`
+    - [ ] 是否遵循 `.harness/constraints/coding-rules.md`
     - [ ] 有无不必要的复杂度
     - [ ] 函数/类是否职责单一
 
@@ -56,10 +56,10 @@
     - [ ] 输入是否有合适的验证？
 
     ## 文档
-    - [ ] 重要设计决策是否记录在 `docs/knowledge/decisions/`？
+    - [ ] 重要设计决策是否记录在 `.harness/knowledge/decisions/`？
     - [ ] CLAUDE.md 是否仍然准确且保持在 200 行以内？
 
-### 5.3 创建 docs/feedback/retro-template.md
+### 5.3 创建 .harness/feedback/retro-template.md
 
 **如果 TEAM_SIZE = solo：**
 
@@ -112,42 +112,16 @@
 
     ## Harness 改进
     - [ ] 有没有文档需要更新？（运行 `/harness` 重新评估）
-    - [ ] 有没有新的编码约束需要加入 `docs/constraints/`？
+    - [ ] 有没有新的编码约束需要加入 `.harness/constraints/`？
     - [ ] Agent 执行质量如何？有没有明显的知识缺口？
     - [ ] 回路是否有效？
-
-### 5.4 创建 .claude/skills/harness-feedback.md
-
-    ---
-    name: harness-feedback
-    description: Use this skill when recording issues, improvements, or feedback about the project or Harness setup.
-    ---
-
-    # Feedback and Retrospective Maintenance
-
-    When asked to record an issue or improvement:
-    1. Ask: "Is this a coding issue, a process issue, or a Harness/docs issue?"
-    2. Coding issue → suggest adding to `docs/constraints/coding-rules.md` if it's a pattern to avoid
-    3. Process issue → suggest adding to `docs/feedback/retro-template.md` as a standing agenda item
-    4. Harness/docs issue → fix the relevant docs file directly
-
-    When running a retrospective:
-    1. Copy `docs/feedback/retro-template.md` to `docs/feedback/retro-YYYY-MM-DD.md`
-    2. Walk through each section with the user
-    3. For Harness improvement items, run or schedule `/harness`
-
-    When reviewing whether Harness is working:
-    1. Ask: "Are agents able to find what they need in docs/?"
-    2. Ask: "Are there recurring questions from agents that should be documented?"
-    3. Suggest specific files to update based on gaps
 
 ### 5.5 确认点
 
 向用户展示已创建的文件：
 > "F（回路）维度安装完成，创建了以下文件：
-> - `docs/feedback/review-checklist.md`
-> - `docs/feedback/retro-template.md`
-> - `.claude/skills/harness-feedback.md`
+> - `.harness/feedback/review-checklist.md`
+> - `.harness/feedback/retro-template.md`
 >
 > 所有 4 个维度已安装完成！最后一步：生成 `/harness` 更新命令。是否继续？"
 

@@ -21,30 +21,30 @@
 
     | 主题 | 文件 |
     |------|------|
-    | 环境搭建与运行 | `docs/environment/README.md` |
-    | 本地配置 | `docs/environment/setup.md` |
-    | 系统架构 | `docs/knowledge/architecture.md` |
-    | 设计决策 | `docs/knowledge/decisions/` |
-    | 架构约束 | `docs/constraints/README.md` |
-    | 编码规范 | `docs/constraints/coding-rules.md` |
-    | Review 清单 | `docs/feedback/review-checklist.md` |
+    | 环境搭建与运行 | `.harness/environment/README.md` |
+    | 本地配置 | `.harness/environment/setup.md` |
+    | 系统架构 | `.harness/knowledge/architecture.md` |
+    | 设计决策 | `.harness/knowledge/decisions/` |
+    | 架构约束 | `.harness/constraints/README.md` |
+    | 编码规范 | `.harness/constraints/coding-rules.md` |
+    | Review 清单 | `.harness/feedback/review-checklist.md` |
 
     ## Agent 指令
     - 改动前先查上方文档地图中的相关条目
-    - 写代码前检查 `docs/constraints/coding-rules.md`
-    - 重大设计决策记录在 `docs/knowledge/decisions/`
+    - 写代码前检查 `.harness/constraints/coding-rules.md`
+    - 重大设计决策记录在 `.harness/knowledge/decisions/`
     - **此文件保持 200 行以内**：细节放到 `docs/` 下对应文件
 
 如果 `TEAM_SIZE = small` 或 `large`，在"Agent 指令"后追加：
 
     ## 协作约定
-    - PR 必须通过 `docs/feedback/review-checklist.md` 检查后才能合并
-    - 重要设计决策记录在 `docs/knowledge/decisions/`
+    - PR 必须通过 `.harness/feedback/review-checklist.md` 检查后才能合并
+    - 重要设计决策记录在 `.harness/knowledge/decisions/`
     - 团队共识在合并前确认
 
 如果 `PROJECT_STAGE = exploration`，在"Agent 指令"末尾追加一行：
 
-    - 可以大胆探索，但在 `docs/knowledge/decisions/` 记录选择理由
+    - 可以大胆探索，但在 `.harness/knowledge/decisions/` 记录选择理由
 
 如果 `PROJECT_STAGE = production`，在"Agent 指令"末尾追加一行：
 
@@ -57,13 +57,13 @@
 
     | 主题 | 文件 |
     |------|------|
-    | 环境搭建与运行 | `docs/environment/README.md` |
-    | 本地配置 | `docs/environment/setup.md` |
-    | 系统架构 | `docs/knowledge/architecture.md` |
-    | 设计决策 | `docs/knowledge/decisions/` |
-    | 架构约束 | `docs/constraints/README.md` |
-    | 编码规范 | `docs/constraints/coding-rules.md` |
-    | Review 清单 | `docs/feedback/review-checklist.md` |
+    | 环境搭建与运行 | `.harness/environment/README.md` |
+    | 本地配置 | `.harness/environment/setup.md` |
+    | 系统架构 | `.harness/knowledge/architecture.md` |
+    | 设计决策 | `.harness/knowledge/decisions/` |
+    | 架构约束 | `.harness/constraints/README.md` |
+    | 编码规范 | `.harness/constraints/coding-rules.md` |
+    | Review 清单 | `.harness/feedback/review-checklist.md` |
 
     > 保持此文件 200 行以内，细节放到 `docs/` 下对应文件。
     <!-- harness:end -->
@@ -71,10 +71,10 @@
 ### 3.2 创建目录结构
 
 在目标项目中创建：
-- `docs/knowledge/`
-- `docs/knowledge/decisions/`
+- `.harness/knowledge/`
+- `.harness/knowledge/decisions/`
 
-### 3.3 创建 docs/knowledge/architecture.md
+### 3.3 创建 .harness/knowledge/architecture.md
 
     # Architecture
 
@@ -100,9 +100,9 @@
 
     ## 设计决策
 
-    参见 `docs/knowledge/decisions/` 的架构决策记录（ADR）。
+    参见 `.harness/knowledge/decisions/` 的架构决策记录（ADR）。
 
-### 3.4 创建 docs/knowledge/decisions/README.md
+### 3.4 创建 .harness/knowledge/decisions/README.md
 
     # 架构决策记录（ADR）
 
@@ -151,17 +151,17 @@
     # Knowledge Documentation Maintenance
 
     When recording a design decision:
-    1. Create `docs/knowledge/decisions/YYYY-MM-DD-<topic>.md` using the ADR template
-    2. Add an entry to the index in `docs/knowledge/decisions/README.md`
+    1. Create `.harness/knowledge/decisions/YYYY-MM-DD-<topic>.md` using the ADR template
+    2. Add an entry to the index in `.harness/knowledge/decisions/README.md`
 
     When updating architecture documentation:
-    1. Read `docs/knowledge/architecture.md`
+    1. Read `.harness/knowledge/architecture.md`
     2. Identify what has changed (new components, changed data flow, new dependencies)
     3. Update relevant sections and confirm with the user
 
     When reviewing documentation completeness:
-    1. Check if all major components are listed in `docs/knowledge/architecture.md`
-    2. Check if significant recent decisions are recorded in `docs/knowledge/decisions/`
+    1. Check if all major components are listed in `.harness/knowledge/architecture.md`
+    2. Check if significant recent decisions are recorded in `.harness/knowledge/decisions/`
     3. Report gaps
 
 ### 3.6 确认点
@@ -169,8 +169,8 @@
 向用户展示已创建/更新的文件：
 > "K（知识）维度安装完成，创建/更新了以下文件：
 > - `CLAUDE.md`（新建或追加了 Harness 索引）
-> - `docs/knowledge/architecture.md`
-> - `docs/knowledge/decisions/README.md`
+> - `.harness/knowledge/architecture.md`
+> - `.harness/knowledge/decisions/README.md`
 > - `.claude/skills/harness-knowledge.md`
 >
 > 是否继续安装 C（约束）维度？"

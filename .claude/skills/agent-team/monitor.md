@@ -16,7 +16,7 @@
 
 **步骤 2：读取历史基准（如有）**
 
-查找 `docs/feedback/coverage-baseline.md`，读取上次记录的覆盖率数据。
+查找 `.harness/feedback/coverage-baseline.md`，读取上次记录的覆盖率数据。
 
 **步骤 3：计算变化**
 
@@ -32,7 +32,7 @@
 
 **步骤 5：更新基准**
 
-将当前覆盖率和日期写入 `docs/feedback/coverage-baseline.md`：
+将当前覆盖率和日期写入 `.harness/feedback/coverage-baseline.md`：
 
 ```markdown
 # 覆盖率基准
@@ -65,7 +65,7 @@
 [如有覆盖率下降或测试失败，列出具体问题]
 
 ### 基准已更新
-docs/feedback/coverage-baseline.md（YYYY-MM-DD）
+.harness/feedback/coverage-baseline.md（YYYY-MM-DD）
 ```
 
 ## 禁止事项

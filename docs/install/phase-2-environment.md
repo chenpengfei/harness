@@ -6,9 +6,9 @@
 
 ### 2.1 创建目录
 
-在目标项目中创建 `docs/environment/` 目录（若不存在）。
+在目标项目中创建 `.harness/environment/` 目录（若不存在）。
 
-### 2.2 创建 docs/environment/README.md
+### 2.2 创建 .harness/environment/README.md
 
 **如果 TECH_TYPE = nodejs，**文件内容为：
 
@@ -124,7 +124,7 @@
 
         > 描述如何查看日志和观察系统状态。
 
-### 2.3 创建 docs/environment/setup.md
+### 2.3 创建 .harness/environment/setup.md
 
 所有技术栈通用，将 `[PROJECT_NAME]` 替换为实际项目名：
 
@@ -173,22 +173,22 @@
     # Environment Documentation Maintenance
 
     When asked to update environment documentation:
-    1. Read `docs/environment/README.md` and `docs/environment/setup.md`
+    1. Read `.harness/environment/README.md` and `.harness/environment/setup.md`
     2. Check what has changed (new dependencies, scripts, env vars)
     3. Update the relevant sections
     4. Ask the user to verify the commands are still accurate
 
     When auditing environment documentation:
-    1. Check if the commands in `docs/environment/README.md` are current
-    2. Check if prerequisites in `docs/environment/setup.md` are complete
+    1. Check if the commands in `.harness/environment/README.md` are current
+    2. Check if prerequisites in `.harness/environment/setup.md` are complete
     3. Report outdated or missing information
 
 ### 2.5 确认点
 
 向用户展示已创建的文件：
 > "E（环境）维度安装完成，创建了以下文件：
-> - `docs/environment/README.md`
-> - `docs/environment/setup.md`
+> - `.harness/environment/README.md`
+> - `.harness/environment/setup.md`
 > - `.claude/skills/harness-env.md`
 >
 > 是否继续安装 K（知识）维度？"

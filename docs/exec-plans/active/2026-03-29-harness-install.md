@@ -206,9 +206,9 @@ git -C /Users/chenpengfei/projects/harness commit -m "feat: add Phase 1 (info co
 
 ### 2.1 创建目录
 
-在目标项目中创建 `docs/environment/` 目录（若不存在）。
+在目标项目中创建 `.harness/environment/` 目录（若不存在）。
 
-### 2.2 创建 docs/environment/README.md
+### 2.2 创建 .harness/environment/README.md
 
 **如果 TECH_TYPE = nodejs，**文件内容为：
 
@@ -324,7 +324,7 @@ git -C /Users/chenpengfei/projects/harness commit -m "feat: add Phase 1 (info co
 
         > 描述如何查看日志和观察系统状态。
 
-### 2.3 创建 docs/environment/setup.md
+### 2.3 创建 .harness/environment/setup.md
 
 所有技术栈通用，将 `[PROJECT_NAME]` 替换为实际项目名：
 
@@ -373,22 +373,22 @@ git -C /Users/chenpengfei/projects/harness commit -m "feat: add Phase 1 (info co
     # Environment Documentation Maintenance
 
     When asked to update environment documentation:
-    1. Read `docs/environment/README.md` and `docs/environment/setup.md`
+    1. Read `.harness/environment/README.md` and `.harness/environment/setup.md`
     2. Check what has changed (new dependencies, scripts, env vars)
     3. Update the relevant sections
     4. Ask the user to verify the commands are still accurate
 
     When auditing environment documentation:
-    1. Check if the commands in `docs/environment/README.md` are current
-    2. Check if prerequisites in `docs/environment/setup.md` are complete
+    1. Check if the commands in `.harness/environment/README.md` are current
+    2. Check if prerequisites in `.harness/environment/setup.md` are complete
     3. Report outdated or missing information
 
 ### 2.5 确认点
 
 向用户展示已创建的文件：
 > "E（环境）维度安装完成，创建了以下文件：
-> - `docs/environment/README.md`
-> - `docs/environment/setup.md`
+> - `.harness/environment/README.md`
+> - `.harness/environment/setup.md`
 > - `.claude/skills/harness-env.md`
 >
 > 是否继续安装 K（知识）维度？"
@@ -455,29 +455,29 @@ git -C /Users/chenpengfei/projects/harness commit -m "feat: add Phase 2 (E - Env
 
     ## 协作约定
     - PR 必须通过 review-checklist 检查后才能合并
-    - 重要设计决策记录在 `docs/knowledge/decisions/`
+    - 重要设计决策记录在 `.harness/knowledge/decisions/`
     - 团队共识在合并前确认
 
 所有配置追加以下内容：
 
     ## 运行项目
-    参见 `docs/environment/README.md`。
+    参见 `.harness/environment/README.md`。
 
     ## 架构
-    参见 `docs/knowledge/architecture.md`。
+    参见 `.harness/knowledge/architecture.md`。
 
     ## 约束
-    参见 `docs/constraints/README.md`。
+    参见 `.harness/constraints/README.md`。
 
     ## Agent 指令
     - 修改代码前先阅读 `docs/` 中的相关文档
-    - 写代码前检查 `docs/constraints/coding-rules.md`
-    - Review 时使用 `docs/feedback/review-checklist.md`
-    - 重大设计决策记录在 `docs/knowledge/decisions/`
+    - 写代码前检查 `.harness/constraints/coding-rules.md`
+    - Review 时使用 `.harness/feedback/review-checklist.md`
+    - 重大设计决策记录在 `.harness/knowledge/decisions/`
 
 如果 `PROJECT_STAGE = exploration`，在"Agent 指令"末尾追加：
 
-    - 可以大胆探索，但在 `docs/knowledge/decisions/` 记录为什么做了这个选择
+    - 可以大胆探索，但在 `.harness/knowledge/decisions/` 记录为什么做了这个选择
 
 如果 `PROJECT_STAGE = production`，在"Agent 指令"末尾追加：
 
@@ -487,20 +487,20 @@ git -C /Users/chenpengfei/projects/harness commit -m "feat: add Phase 2 (E - Env
 
     <!-- harness:start -->
     ## Harness 文档索引
-    - 环境搭建：`docs/environment/README.md`
-    - 系统架构：`docs/knowledge/architecture.md`
-    - 架构约束：`docs/constraints/README.md`
-    - Review 清单：`docs/feedback/review-checklist.md`
-    - 设计决策：`docs/knowledge/decisions/`
+    - 环境搭建：`.harness/environment/README.md`
+    - 系统架构：`.harness/knowledge/architecture.md`
+    - 架构约束：`.harness/constraints/README.md`
+    - Review 清单：`.harness/feedback/review-checklist.md`
+    - 设计决策：`.harness/knowledge/decisions/`
     <!-- harness:end -->
 
 ### 3.2 创建目录结构
 
 在目标项目中创建：
-- `docs/knowledge/`
-- `docs/knowledge/decisions/`
+- `.harness/knowledge/`
+- `.harness/knowledge/decisions/`
 
-### 3.3 创建 docs/knowledge/architecture.md
+### 3.3 创建 .harness/knowledge/architecture.md
 
     # Architecture
 
@@ -526,9 +526,9 @@ git -C /Users/chenpengfei/projects/harness commit -m "feat: add Phase 2 (E - Env
 
     ## 设计决策
 
-    参见 `docs/knowledge/decisions/` 的架构决策记录（ADR）。
+    参见 `.harness/knowledge/decisions/` 的架构决策记录（ADR）。
 
-### 3.4 创建 docs/knowledge/decisions/README.md
+### 3.4 创建 .harness/knowledge/decisions/README.md
 
     # 架构决策记录（ADR）
 
@@ -577,17 +577,17 @@ git -C /Users/chenpengfei/projects/harness commit -m "feat: add Phase 2 (E - Env
     # Knowledge Documentation Maintenance
 
     When recording a design decision:
-    1. Create `docs/knowledge/decisions/YYYY-MM-DD-<topic>.md` using the ADR template
-    2. Add an entry to the index in `docs/knowledge/decisions/README.md`
+    1. Create `.harness/knowledge/decisions/YYYY-MM-DD-<topic>.md` using the ADR template
+    2. Add an entry to the index in `.harness/knowledge/decisions/README.md`
 
     When updating architecture documentation:
-    1. Read `docs/knowledge/architecture.md`
+    1. Read `.harness/knowledge/architecture.md`
     2. Identify what has changed (new components, changed data flow, new dependencies)
     3. Update relevant sections and confirm with the user
 
     When reviewing documentation completeness:
-    1. Check if all major components are listed in `docs/knowledge/architecture.md`
-    2. Check if significant recent decisions are recorded in `docs/knowledge/decisions/`
+    1. Check if all major components are listed in `.harness/knowledge/architecture.md`
+    2. Check if significant recent decisions are recorded in `.harness/knowledge/decisions/`
     3. Report gaps
 
 ### 3.6 确认点
@@ -595,8 +595,8 @@ git -C /Users/chenpengfei/projects/harness commit -m "feat: add Phase 2 (E - Env
 向用户展示已创建/更新的文件：
 > "K（知识）维度安装完成，创建/更新了以下文件：
 > - `CLAUDE.md`（新建或追加了 Harness 索引）
-> - `docs/knowledge/architecture.md`
-> - `docs/knowledge/decisions/README.md`
+> - `.harness/knowledge/architecture.md`
+> - `.harness/knowledge/decisions/README.md`
 > - `.claude/skills/harness-knowledge.md`
 >
 > 是否继续安装 C（约束）维度？"
@@ -640,9 +640,9 @@ git -C /Users/chenpengfei/projects/harness commit -m "feat: add Phase 3 (K - Kno
 
 根据 `PROJECT_STAGE` 调整约束严格程度。
 
-### 4.1 创建 docs/constraints/ 目录
+### 4.1 创建 .harness/constraints/ 目录
 
-### 4.2 创建 docs/constraints/README.md
+### 4.2 创建 .harness/constraints/README.md
 
 基础模板（所有配置通用）：
 
@@ -680,7 +680,7 @@ git -C /Users/chenpengfei/projects/harness commit -m "feat: add Phase 3 (K - Kno
 
     > 关键命名规则。详细编码规范参见 `coding-rules.md`。
 
-### 4.3 创建 docs/constraints/coding-rules.md
+### 4.3 创建 .harness/constraints/coding-rules.md
 
 基础模板（所有配置通用）：
 
@@ -748,8 +748,8 @@ git -C /Users/chenpengfei/projects/harness commit -m "feat: add Phase 3 (K - Kno
 
 向用户展示已创建的文件：
 > "C（约束）维度安装完成，创建了以下文件：
-> - `docs/constraints/README.md`
-> - `docs/constraints/coding-rules.md`
+> - `.harness/constraints/README.md`
+> - `.harness/constraints/coding-rules.md`
 >
 > 是否继续安装 F（回路）维度？"
 
@@ -792,9 +792,9 @@ git -C /Users/chenpengfei/projects/harness commit -m "feat: add Phase 4 (C - Con
 
 根据 `TEAM_SIZE` 调整内容深度：solo 使用简化版，small/large 使用完整版。
 
-### 5.1 创建 docs/feedback/ 目录
+### 5.1 创建 .harness/feedback/ 目录
 
-### 5.2 创建 docs/feedback/review-checklist.md
+### 5.2 创建 .harness/feedback/review-checklist.md
 
 **如果 TEAM_SIZE = solo：**
 
@@ -830,7 +830,7 @@ git -C /Users/chenpengfei/projects/harness commit -m "feat: add Phase 4 (C - Con
 
     ## 代码质量
     - [ ] 可读性和自文档性
-    - [ ] 是否遵循 `docs/constraints/coding-rules.md`
+    - [ ] 是否遵循 `.harness/constraints/coding-rules.md`
     - [ ] 有无不必要的复杂度
     - [ ] 函数/类是否职责单一
 
@@ -844,10 +844,10 @@ git -C /Users/chenpengfei/projects/harness commit -m "feat: add Phase 4 (C - Con
     - [ ] 输入是否有合适的验证？
 
     ## 文档
-    - [ ] 重要设计决策是否记录在 `docs/knowledge/decisions/`？
+    - [ ] 重要设计决策是否记录在 `.harness/knowledge/decisions/`？
     - [ ] CLAUDE.md 是否仍然准确？
 
-### 5.3 创建 docs/feedback/retro-template.md
+### 5.3 创建 .harness/feedback/retro-template.md
 
 **如果 TEAM_SIZE = solo：**
 
@@ -900,7 +900,7 @@ git -C /Users/chenpengfei/projects/harness commit -m "feat: add Phase 4 (C - Con
 
     ## Harness 改进
     - [ ] 有没有文档需要更新？（运行 `/harness` 重新评估）
-    - [ ] 有没有新的编码约束需要加入 `docs/constraints/`？
+    - [ ] 有没有新的编码约束需要加入 `.harness/constraints/`？
     - [ ] Agent 执行质量如何？有没有明显的知识缺口？
     - [ ] 回路是否有效？
 
@@ -915,12 +915,12 @@ git -C /Users/chenpengfei/projects/harness commit -m "feat: add Phase 4 (C - Con
 
     When asked to record an issue or improvement:
     1. Ask: "Is this a coding issue, a process issue, or a Harness/docs issue?"
-    2. Coding issue → suggest adding to `docs/constraints/coding-rules.md` if it's a pattern to avoid
-    3. Process issue → suggest adding to `docs/feedback/retro-template.md` as a standing agenda item
+    2. Coding issue → suggest adding to `.harness/constraints/coding-rules.md` if it's a pattern to avoid
+    3. Process issue → suggest adding to `.harness/feedback/retro-template.md` as a standing agenda item
     4. Harness/docs issue → fix the relevant docs file directly
 
     When running a retrospective:
-    1. Copy `docs/feedback/retro-template.md` to `docs/feedback/retro-YYYY-MM-DD.md`
+    1. Copy `.harness/feedback/retro-template.md` to `.harness/feedback/retro-YYYY-MM-DD.md`
     2. Walk through each section with the user
     3. For Harness improvement items, run or schedule `/harness`
 
@@ -933,8 +933,8 @@ git -C /Users/chenpengfei/projects/harness commit -m "feat: add Phase 4 (C - Con
 
 向用户展示已创建的文件：
 > "F（回路）维度安装完成，创建了以下文件：
-> - `docs/feedback/review-checklist.md`
-> - `docs/feedback/retro-template.md`
+> - `.harness/feedback/review-checklist.md`
+> - `.harness/feedback/retro-template.md`
 > - `.claude/skills/harness-feedback.md`
 >
 > 所有 4 个维度已安装完成！最后一步：生成 `/harness` 更新命令。是否继续？"
@@ -1026,11 +1026,11 @@ git -C /Users/chenpengfei/projects/harness commit -m "feat: add Phase 5 (F - Fee
 
     | 变化 | 受影响的文件 |
     |------|------------|
-    | 技术栈变化 | `docs/environment/README.md`、`docs/constraints/coding-rules.md` |
-    | teamSize: solo → small/large | `CLAUDE.md`（添加协作约定）、`docs/feedback/review-checklist.md`（升级完整版）、`docs/feedback/retro-template.md`（升级完整版）|
-    | teamSize: small/large → solo | `CLAUDE.md`（移除协作约定）、`docs/feedback/` 文件简化 |
-    | projectStage: exploration → iteration/production | `docs/constraints/README.md`（加强约束描述）、`docs/constraints/coding-rules.md`（加强规范）、`CLAUDE.md`（更新 Agent 指令）|
-    | projectStage: production/iteration → exploration | `docs/constraints/README.md`（放宽描述）、`CLAUDE.md`（更新 Agent 指令）|
+    | 技术栈变化 | `.harness/environment/README.md`、`.harness/constraints/coding-rules.md` |
+    | teamSize: solo → small/large | `CLAUDE.md`（添加协作约定）、`.harness/feedback/review-checklist.md`（升级完整版）、`.harness/feedback/retro-template.md`（升级完整版）|
+    | teamSize: small/large → solo | `CLAUDE.md`（移除协作约定）、`.harness/feedback/` 文件简化 |
+    | projectStage: exploration → iteration/production | `.harness/constraints/README.md`（加强约束描述）、`.harness/constraints/coding-rules.md`（加强规范）、`CLAUDE.md`（更新 Agent 指令）|
+    | projectStage: production/iteration → exploration | `.harness/constraints/README.md`（放宽描述）、`CLAUDE.md`（更新 Agent 指令）|
 
     ### 步骤 4：呈现变更计划
 
@@ -1081,18 +1081,18 @@ git -C /Users/chenpengfei/projects/harness commit -m "feat: add Phase 5 (F - Fee
 > - `.claude/skills/harness-knowledge.md`
 > - `.claude/skills/harness-feedback.md`
 > - `CLAUDE.md`
-> - `docs/environment/README.md`
-> - `docs/environment/setup.md`
-> - `docs/knowledge/architecture.md`
-> - `docs/knowledge/decisions/README.md`
-> - `docs/constraints/README.md`
-> - `docs/constraints/coding-rules.md`
-> - `docs/feedback/review-checklist.md`
-> - `docs/feedback/retro-template.md`
+> - `.harness/environment/README.md`
+> - `.harness/environment/setup.md`
+> - `.harness/knowledge/architecture.md`
+> - `.harness/knowledge/decisions/README.md`
+> - `.harness/constraints/README.md`
+> - `.harness/constraints/coding-rules.md`
+> - `.harness/feedback/review-checklist.md`
+> - `.harness/feedback/retro-template.md`
 >
 > **下一步建议**：
 > 1. 填写 `CLAUDE.md` 中的项目结构和关键约定
-> 2. 更新 `docs/environment/README.md` 中的具体命令（若有占位符）
+> 2. 更新 `.harness/environment/README.md` 中的具体命令（若有占位符）
 > 3. 随项目演化，运行 `/harness` 持续更新配置"
 ```
 

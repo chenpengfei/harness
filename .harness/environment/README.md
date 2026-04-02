@@ -6,7 +6,7 @@
 
 ## 仓库性质
 
-harness 是**纯内容仓库**，不含可执行代码，无构建步骤、无测试运行器、无依赖安装。
+harness 是**内容优先仓库**，以 Markdown 文件为主，无构建步骤、无测试运行器、无依赖安装。
 
 ---
 
@@ -23,6 +23,7 @@ git diff
 ls docs/install/
 ls .claude/commands/
 ls .claude/skills/agent-team/
+ls .harness/
 ```
 
 ---
@@ -38,7 +39,7 @@ ls .claude/skills/agent-team/
 `/audit` 会检查：
 - 术语一致性（E-K-C-F 框架名称、中文维度名、人类掌舵表述）
 - 结构完整性（phase 文件、命令闭环、知识目录）
-- 原则遵守（无可执行代码、无外部 URL、无内部硬链接）
+- 原则遵守（无外部 URL、无内部硬链接）
 
 ---
 
@@ -48,11 +49,6 @@ ls .claude/skills/agent-team/
 
 ```bash
 # 一键提交并推送
-/commit-push
+/commit
+/push
 ```
-
----
-
-## 贡献 harness 本身的改进
-
-在**目标项目**中运行 `/harness-feedback` 记录对 harness 的改进建议，可选通过 `gh` CLI 提交为 GitHub Issue。

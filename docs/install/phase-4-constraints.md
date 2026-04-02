@@ -4,9 +4,9 @@
 
 根据 `PROJECT_STAGE` 调整约束严格程度。
 
-### 4.1 创建 docs/constraints/ 目录
+### 4.1 创建 .harness/constraints/ 目录
 
-### 4.2 创建 docs/constraints/README.md
+### 4.2 创建 .harness/constraints/README.md
 
 基础模板（所有配置通用）：
 
@@ -55,7 +55,7 @@
 
     详细规则参见 `coding-rules.md`。
 
-### 4.3 创建 docs/constraints/coding-rules.md
+### 4.3 创建 .harness/constraints/coding-rules.md
 
 基础模板（所有配置通用）：
 
@@ -132,8 +132,8 @@
 
 向用户展示已创建的文件：
 > "C（约束）维度安装完成，创建了以下文件：
-> - `docs/constraints/README.md`
-> - `docs/constraints/coding-rules.md`
+> - `.harness/constraints/README.md`
+> - `.harness/constraints/coding-rules.md`
 >
 > 是否继续安装 F（回路）维度？"
 

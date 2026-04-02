@@ -8,19 +8,27 @@
 
 Harness 是一个 Agent-First 工程脚手架，用来把「E-K-C-F」（环境、知识、约束、回路）四类工程能力安装到任意代码仓库。
 
-**核心洞察**：让 Agent 稳定产出的不是模型能力，而是围绕它构建的工程体系。Harness 的职责是帮助工程团队系统性地构建这套体系。
-
 ---
 
 ## Codemap
 
-Harness 仓库本身是一个**纯内容仓库**，不含可执行代码。
+Harness 仓库本身是一个**内容优先仓库**，以 Markdown 文件为主，辅以必要的工具脚本（如 git hooks）。
 
 ```
 harness/
 ├── README.md       # 项目介绍 + 安装入口
 ├── INSTALL.md      # Agent 安装剧本（核心文件）
 ├── ARCHITECTURE.md # 本文件
+├── .claude/        # Claude Code 工具配置
+│   ├── commands/       # 斜杠命令定义（/do /commit /push /govern /harness）
+│   ├── skills/         # Agent Team 技能库（orchestrator、feature-developer 等）
+│   ├── hooks/          # PreToolUse 钩子脚本
+│   └── settings.json   # hook 注册配置
+├── .harness/       # E-K-C-F 四维度文档（同时作为目标项目安装模板）
+│   ├── constraints/    # C 维度：开发约束
+│   ├── environment/    # E 维度：环境说明
+│   ├── feedback/       # F 维度：反馈机制
+│   └── knowledge/      # K 维度：架构知识
 └── docs/
     ├── design-docs/    # 设计文档
     ├── exec-plans/     # 执行计划
@@ -32,6 +40,8 @@ harness/
 
 **`docs/install/`** 把 INSTALL.md 的每个安装阶段拆分为独立文件（`phase-0-preflight.md` 至 `phase-7-agent-team.md`），供 INSTALL.md 引用或 Agent 按需读取。
 
+**`.harness/`** 存放 harness 仓库自身的 E-K-C-F 四维度文档，同时作为目标项目安装时的内容模板。安装过程（Phase 1）通过 git sparse-checkout 将此目录拉取到目标项目，后续各阶段在此基础上定制内容。
+
 **`docs/design-docs/`** 存放影响仓库结构或安装行为的设计决策文档，文件名以日期开头（`YYYY-MM-DD-*.md`）。
 
 **`docs/exec-plans/`** 存放执行计划，分 `active/` 和 `completed/` 两个子目录。
@@ -40,13 +50,11 @@ harness/
 
 ## 架构不变式
 
-- **harness 仓库不含代码**。所有文件均为 Markdown 文档，Agent 通过读取而非执行来使用它们。
-
-- **安装后无依赖**。harness 对目标项目的影响完全发生在安装阶段，安装完成后目标项目不依赖 harness 仓库的任何内容（包括网络请求）。`/harness` 命令的剧本在安装时已写入目标项目本地，离线可用。
-
 - **INSTALL.md 是单一真相来源**。`docs/install/` 下的阶段文件服务于 INSTALL.md，INSTALL.md 是安装行为的权威定义。两者出现矛盾时，以 INSTALL.md 为准。
 
 - **内容不链接代码**。文档中使用符号名称（文件名、模块名）而非硬链接，避免链接失效。
+
+- **`.harness/` 纳入目标项目版本控制**。安装流程不得将 `.harness/` 加入目标项目的 `.gitignore`；E-K-C-F 文档是目标项目代码库的一部分，不是临时文件。
 
 ---
 

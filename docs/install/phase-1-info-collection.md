@@ -49,7 +49,7 @@
 
 ### 问题 5：Harness 仓库地址
 
-> "请提供 harness 仓库的 Git 地址（用于后续通过 `/harness-feedback` 提交改进建议）。"
+> "请提供 harness 仓库的 Git 地址（用于拉取 `.harness/` 模板目录并在后续通过 `/harness` 同步最新内容）。"
 >
 > 例如：`git@github.com:chenpengfei/harness.git`
 >
@@ -82,3 +82,22 @@
 > "以上信息是否正确？确认后将开始安装第一个维度（E - 环境）。"
 
 等待确认后继续 Phase 2。
+
+### 拉取 .harness/ 模板目录
+
+**若 `HARNESS_REPO` 非空**，在创建配置文件后，将 harness 仓库的 `.harness/` 目录拉取到目标工程：
+
+```bash
+# 使用 git sparse-checkout 仅拉取 .harness/ 目录
+git clone --depth=1 --filter=blob:none --sparse <HARNESS_REPO> /tmp/harness_pull_tmp
+cd /tmp/harness_pull_tmp
+git sparse-checkout set .harness
+cd -
+# 将 .harness/ 中的文件复制到目标项目（保留 harness-config.json，不覆盖）
+rsync -av --exclude='harness-config.json' /tmp/harness_pull_tmp/.harness/ .harness/
+rm -rf /tmp/harness_pull_tmp
+```
+
+若 git 命令执行失败或 `HARNESS_REPO` 为空，跳过此步骤；后续 Phase 2–5 会直接在 `.harness/` 下生成所需文件。
+
+> **说明**：此步骤将 harness 仓库的 E-K-C-F 模板文件预填充到 `.harness/` 中，后续各 Phase 会根据项目实际情况覆盖或补充这些文件的内容。

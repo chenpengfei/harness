@@ -44,11 +44,11 @@
 
 | 变化 | 受影响的文件 |
 |------|------------|
-| 技术栈变化 | `docs/environment/README.md`、`docs/constraints/coding-rules.md` |
-| teamSize: solo → small/large | `CLAUDE.md`（添加协作约定）、`docs/feedback/review-checklist.md`（升级完整版）、`docs/feedback/retro-template.md`（升级完整版）|
-| teamSize: small/large → solo | `CLAUDE.md`（移除协作约定）、`docs/feedback/` 文件简化 |
-| projectStage: exploration → iteration/production | `docs/constraints/README.md`（加强约束描述）、`docs/constraints/coding-rules.md`（加强规范）、`CLAUDE.md`（更新 Agent 指令）|
-| projectStage: production/iteration → exploration | `docs/constraints/README.md`（放宽描述）、`CLAUDE.md`（更新 Agent 指令）|
+| 技术栈变化 | `.harness/environment/README.md`、`.harness/constraints/coding-rules.md` |
+| teamSize: solo → small/large | `CLAUDE.md`（添加协作约定）、`.harness/feedback/review-checklist.md`（升级完整版）、`.harness/feedback/retro-template.md`（升级完整版）|
+| teamSize: small/large → solo | `CLAUDE.md`（移除协作约定）、`.harness/feedback/` 文件简化 |
+| projectStage: exploration → iteration/production | `.harness/constraints/README.md`（加强约束描述）、`.harness/constraints/coding-rules.md`（加强规范）、`CLAUDE.md`（更新 Agent 指令）|
+| projectStage: production/iteration → exploration | `.harness/constraints/README.md`（放宽描述）、`CLAUDE.md`（更新 Agent 指令）|
 
 ### 步骤 4：呈现变更计划
 
@@ -74,26 +74,29 @@
 - 更新 `updatedAt` 为当前时间戳
 - 更新所有变化的字段
 
-### 步骤 5.5：刷新 Harness 命令文件
+### 步骤 5.5：刷新 Harness 文件
 
 从配置中读取 `harnessRepo` 字段：
 
 **若 `harnessRepo` 为空**，打印提示并跳过本步骤：
-> "未配置 harnessRepo，跳过命令文件刷新。如需同步最新命令，请在 `.harness/harness-config.json` 中填写 `harnessRepo` 字段。"
+> "未配置 harnessRepo，跳过文件刷新。如需同步最新内容，请在 `.harness/harness-config.json` 中填写 `harnessRepo` 字段。"
 
 **若 `harnessRepo` 非空**，先构造 raw 文件 URL 的前缀：
 - 若格式为 `git@github.com:owner/repo.git`，提取 `owner/repo`，前缀为 `https://raw.githubusercontent.com/owner/repo/main`
 - 若格式为 HTTPS 地址（含 `github.com/`），提取 `github.com/` 后的 `owner/repo`（去掉 `.git` 后缀），前缀同上
 
-再通过 WebFetch 依次拉取以下文件，并覆盖目标项目中对应文件（强制覆盖，不保留旧版本）：
+通过 WebFetch 依次拉取以下文件，并覆盖目标项目中对应文件（强制覆盖，不保留旧版本）：
 
 | 拉取路径（拼接到前缀后） | 目标工程路径 |
 |----------------------|------------|
 | `/.claude/commands/commit.md` | `.claude/commands/commit.md` |
 | `/.claude/commands/push.md` | `.claude/commands/push.md` |
-| `/.claude/commands/harness-feedback.md` | `.claude/commands/harness-feedback.md` |
 | `/.claude/commands/harness.md` | `.claude/commands/harness.md` |
 | `/.claude/hooks/validate-commit-msg.py` | `.claude/hooks/validate-commit-msg.py` |
+| `/.harness/constraints/README.md` | `.harness/constraints/README.md` |
+| `/.harness/environment/README.md` | `.harness/environment/README.md` |
+| `/.harness/feedback/README.md` | `.harness/feedback/README.md` |
+| `/.harness/knowledge/README.md` | `.harness/knowledge/README.md` |
 
 若某个文件 WebFetch 失败（网络错误、仓库私有等），记录该文件路径，继续处理其余文件；所有文件处理完毕后，在步骤 6 的摘要中汇报哪些文件刷新失败。
 

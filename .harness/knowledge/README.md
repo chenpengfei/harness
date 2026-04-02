@@ -24,22 +24,24 @@ harness/
 ├── README.md              # 项目介绍（面向人类）
 ├── INSTALL.md             # Agent 安装剧本（核心文件，面向 Agent）
 ├── ARCHITECTURE.md        # 本仓库架构决策（面向维护者）
+├── .harness/              # E-K-C-F 四维度文档（也作为目标项目模板）
+│   ├── constraints/       # C 维度：开发约束
+│   ├── environment/       # E 维度：环境说明
+│   ├── feedback/          # F 维度：反馈机制（本目录）
+│   └── knowledge/         # K 维度：架构知识
 ├── .claude/
 │   ├── commands/          # harness 自用的 Claude Code 命令
-│   │   ├── audit.md       # /audit — 哲学一致性审查
-│   │   ├── commit-push.md # /commit-push — 提交并推送
+│   │   ├── commit.md      # /commit — 语义化提交
 │   │   ├── do.md          # /do — Agent Team 协调器
-│   │   └── harness-feedback.md # /harness-feedback — 改进反馈
+│   │   ├── govern.md      # /govern — 持续治理
+│   │   ├── harness.md     # /harness — Harness 更新
+│   │   └── push.md        # /push — 推送到远程
 │   └── skills/agent-team/ # /do 命令使用的 Agent 专业技能
 └── docs/
     ├── install/           # 8 个安装阶段的详细指引（Phase 0-7）
     ├── design-docs/       # 设计决策文档（含 index.md）
     ├── exec-plans/        # 执行计划（active/ 和 completed/）
-    ├── references/        # 外部参考资料
-    ├── environment/       # 本文档所在目录（E 维度）
-    ├── knowledge/         # 架构知识（K 维度，本目录）
-    ├── constraints/       # 开发约束（C 维度）
-    └── feedback/          # 反馈机制（F 维度）
+    └── references/        # 外部参考资料
 ```
 
 ---
@@ -49,10 +51,9 @@ harness/
 所有设计决策记录于 `docs/design-docs/`，参见 `docs/design-docs/index.md`。
 
 主要决策：
-- harness 为**纯内容仓库**，绝不含可执行代码
 - **INSTALL.md 是单一真相来源**，所有安装逻辑在此集中
-- **安装后无依赖**：安装完成后目标项目不依赖 harness 仓库
-- 命令文件不依赖外部 URL，确保离线可用
+- **安装后无依赖**：安装完成后目标项目不依赖 harness 仓库的任何内容
+- **`.harness/` 即安装产物**：安装过程通过拉取 `.harness/` 目录到目标工程实现，目标工程提交 `.harness/` 进入版本控制
 
 ---
 

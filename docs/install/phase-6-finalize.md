@@ -58,19 +58,13 @@
 
 写回文件，保持原有配置不变。
 
-### 6.1.5 创建 .claude/commands/harness-feedback.md
-
-从 harness 仓库读取 `.claude/commands/harness-feedback.md` 并创建到目标项目。
-
-> **Agent 注意**：通过 WebFetch 或 Read 从 harness 仓库对应路径读取文件内容，完全复制，不做任何修改。
-
 ### 6.1.8 更新 .gitignore
 
-在目标项目根目录的 `.gitignore` 文件末尾追加以下内容（若 `.gitignore` 不存在则创建）：
+检查目标项目根目录的 `.gitignore` 文件，确保其中 **不存在** 忽略 `.harness/` 目录的规则（如 `.harness/` 或 `.harness`）。
 
-    # Harness 改进建议草稿（本地存档，不提交到目标项目代码库）
-    .harness/proposals/
-    .harness/submitted/
+若存在此类规则，将其删除。
+
+> **说明**：`.harness/` 目录包含 E-K-C-F 四维度文档及 Harness 配置，必须纳入目标项目的版本控制。
 
 ### 6.2 创建 .claude/commands/harness.md
 
@@ -88,27 +82,24 @@
 >
 > **已创建的文件**：
 > - `.harness/harness-config.json`
+> - `.harness/environment/README.md`
+> - `.harness/environment/setup.md`
+> - `.harness/knowledge/architecture.md`
+> - `.harness/knowledge/decisions/README.md`
+> - `.harness/constraints/README.md`
+> - `.harness/constraints/coding-rules.md`
+> - `.harness/feedback/review-checklist.md`
+> - `.harness/feedback/retro-template.md`
 > - `.claude/commands/commit.md`
 > - `.claude/commands/push.md`
+> - `.claude/commands/harness.md`
 > - `.claude/hooks/validate-commit-msg.py`
 > - `.claude/settings.json`
-> - `.claude/commands/harness.md`
-> - `.claude/commands/harness-feedback.md`
 > - `.claude/skills/harness-env.md`
 > - `.claude/skills/harness-knowledge.md`
-> - `.claude/skills/harness-feedback.md`
 > - `CLAUDE.md`
-> - `docs/environment/README.md`
-> - `docs/environment/setup.md`
-> - `docs/knowledge/architecture.md`
-> - `docs/knowledge/decisions/README.md`
-> - `docs/constraints/README.md`
-> - `docs/constraints/coding-rules.md`
-> - `docs/feedback/review-checklist.md`
-> - `docs/feedback/retro-template.md`
 >
 > **下一步建议**：
 > 1. 填写 `CLAUDE.md` 中的项目结构和关键约定
-> 2. 更新 `docs/environment/README.md` 中的具体命令（若有占位符）
-> 3. 随项目演化，运行 `/harness` 持续更新配置
-> 4. 运行 `/harness-feedback` 随时记录实践中发现的改进点"
+> 2. 更新 `.harness/environment/README.md` 中的具体命令（若有占位符）
+> 3. 随项目演化，运行 `/harness` 持续更新配置"
