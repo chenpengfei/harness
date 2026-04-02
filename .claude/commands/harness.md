@@ -76,14 +76,19 @@
 
 ### 步骤 5.5：刷新 Harness 文件
 
-从配置中读取 `harnessRepo` 字段：
+从配置中读取 `harnessRepo` 和 `rawBaseUrl` 字段：
 
-**若 `harnessRepo` 为空**，打印提示并跳过本步骤：
+**若 `harnessRepo` 为空且 `rawBaseUrl` 为空**，打印提示并跳过本步骤：
 > "未配置 harnessRepo，跳过文件刷新。如需同步最新内容，请在 `.harness/harness-config.json` 中填写 `harnessRepo` 字段。"
 
-**若 `harnessRepo` 非空**，先构造 raw 文件 URL 的前缀：
-- 若格式为 `git@github.com:owner/repo.git`，提取 `owner/repo`，前缀为 `https://raw.githubusercontent.com/owner/repo/main`
-- 若格式为 HTTPS 地址（含 `github.com/`），提取 `github.com/` 后的 `owner/repo`（去掉 `.git` 后缀），前缀同上
+**否则**，按以下优先级确定 raw 文件 URL 前缀：
+
+1. **优先使用 `rawBaseUrl`**：若 `rawBaseUrl` 字段非空，直接将其作为前缀（例如 `https://cdn.jsdelivr.net/gh/owner/repo@main`）。
+2. **回退到 `harnessRepo` 推导**：若 `rawBaseUrl` 为空，从 `harnessRepo` 构造前缀：
+   - 若格式为 `git@github.com:owner/repo.git`，提取 `owner/repo`，前缀为 `https://raw.githubusercontent.com/owner/repo/main`
+   - 若格式为 HTTPS 地址（含 `github.com/`），提取 `github.com/` 后的 `owner/repo`（去掉 `.git` 后缀），前缀同上
+
+> **提示**：如果 `raw.githubusercontent.com` 访问缓慢（例如中国大陆），可在 `.harness/harness-config.json` 中将 `rawBaseUrl` 设置为 `https://cdn.jsdelivr.net/gh/owner/repo@main` 以使用 jsDelivr CDN 加速。
 
 通过 WebFetch 依次拉取以下文件，并覆盖目标项目中对应文件（强制覆盖，不保留旧版本）：
 

@@ -61,8 +61,15 @@ Agent-First 时代的工程支架 = 环境 x 知识 x 约束 x 反馈
 
 将以下指令复制给你的 Agent（Claude Code 或其他支持 WebFetch 的 Agent）：
 
+**国际网络：**
 ```
 请读取 https://raw.githubusercontent.com/chenpengfei/harness/main/INSTALL.md
+并按照其中的指引，在当前项目目录下安装 Harness 能力。
+```
+
+**中国大陆（访问 GitHub 较慢时使用）：**
+```
+请读取 https://cdn.jsdelivr.net/gh/chenpengfei/harness@main/INSTALL.md
 并按照其中的指引，在当前项目目录下安装 Harness 能力。
 ```
 

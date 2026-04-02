@@ -4,6 +4,7 @@
 
 | 文件 | 日期 | 状态 | 描述 |
 |------|------|------|------|
+| [2026-04-02-raw-base-url-design.md](2026-04-02-raw-base-url-design.md) | 2026-04-02 | 已采纳 | 支持可配置 rawBaseUrl：以 jsDelivr CDN 加速 harness 文件下载，解决中国大陆访问慢问题 |
 | [2026-04-02-govern-command-design.md](2026-04-02-govern-command-design.md) | 2026-04-02 | 已批准 | `/govern` 命令设计：三轮扫描 + 逐项协商的持续治理机制 |
 | [2026-04-02-move-install-to-root-design.md](2026-04-02-move-install-to-root-design.md) | 2026-04-02 | 已实施 | 将 `install/` 目录从 `docs/install/` 移至项目根目录 |
 | [2026-04-01-semantic-commit-commands-design.md](2026-04-01-semantic-commit-commands-design.md) | 2026-04-01 | 已批准 | `/commit` 与 `/push` 命令及 Semantic Commit Messages 支持设计 |

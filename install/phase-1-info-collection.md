@@ -57,9 +57,19 @@
 
 记录为：`HARNESS_REPO`（可为空）
 
+### 问题 6：下载加速地址（可选）
+
+> "如果你所在网络访问 `raw.githubusercontent.com` 较慢（例如中国大陆），可填写替代的文件 Raw URL 前缀，Agent 将优先使用该地址拉取 harness 文件。"
+>
+> 例如（jsDelivr CDN，中国访问快速）：`https://cdn.jsdelivr.net/gh/chenpengfei/harness@main`
+>
+> 若网络正常或不需要，直接回车跳过（留空）。
+
+记录为：`RAW_BASE_URL`（可为空）
+
 ### 写入配置文件
 
-收集完 5 个答案后，创建 `.harness/` 目录（若不存在），然后创建 `.harness/harness-config.json`：
+收集完所有答案后，创建 `.harness/` 目录（若不存在），然后创建 `.harness/harness-config.json`：
 
 ```json
 {
@@ -74,7 +84,8 @@
   "techType": "<TECH_TYPE>",
   "teamSize": "<TEAM_SIZE>",
   "projectStage": "<PROJECT_STAGE>",
-  "harnessRepo": "<HARNESS_REPO>"
+  "harnessRepo": "<HARNESS_REPO>",
+  "rawBaseUrl": "<RAW_BASE_URL>"
 }
 ```
 

@@ -2,6 +2,8 @@
 
 **Agent 执行步骤：**
 
+> **URL 基准说明**：本阶段通过 WebFetch 从 harness 仓库拉取文件。请使用你加载 `INSTALL.md` 所用的 **同一 URL 前缀**作为基准（例如，若你从 `https://cdn.jsdelivr.net/gh/chenpengfei/harness@main/INSTALL.md` 读取了本文件，则基准为 `https://cdn.jsdelivr.net/gh/chenpengfei/harness@main`；若从 `https://raw.githubusercontent.com/chenpengfei/harness/main/INSTALL.md` 读取，则基准为 `https://raw.githubusercontent.com/chenpengfei/harness/main`）。以下各步骤中的"从 harness 仓库读取"均使用该基准拼接文件路径。
+
 ### 6.1a 创建 .claude/commands/commit.md
 
 从 harness 仓库读取 `.claude/commands/commit.md` 并创建到目标项目。
