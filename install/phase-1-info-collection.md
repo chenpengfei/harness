@@ -2,7 +2,7 @@
 
 **Agent 执行步骤：**
 
-逐一向用户提问，等待回答后再问下一个。将所有答案记录在内存中供后续阶段使用。
+逐一向用户提问（共 4 个问题），等待回答后再问下一个。将所有答案记录在内存中供后续阶段使用。
 
 ### 问题 1：项目名称
 
@@ -47,25 +47,15 @@
 
 记录为：`PROJECT_STAGE`（exploration / iteration / production）
 
-### 问题 5：Harness 仓库地址
+### 自动推导 RAW_BASE_URL
 
-> "请提供 harness 仓库的 Git 地址（用于拉取 `.harness/` 模板目录并在后续通过 `/harness` 同步最新内容）。"
->
-> 例如：`git@github.com:chenpengfei/harness.git`
->
-> 若暂不需要此功能，可直接回车跳过（留空）。
+无需向用户提问。从加载本文件（`INSTALL.md`）时所用的 URL 自动推导 `RAW_BASE_URL`：
 
-记录为：`HARNESS_REPO`（可为空）
+- 若加载 URL 形如 `https://raw.githubusercontent.com/<owner>/<repo>/main/INSTALL.md`，转换为 jsDelivr 格式：`https://cdn.jsdelivr.net/gh/<owner>/<repo>@main`
+- 若加载 URL 已是 jsDelivr 格式（`https://cdn.jsdelivr.net/gh/...`），截取至最后一个 `/` 之前直接使用
+- 若无法推导，默认使用 `https://cdn.jsdelivr.net/gh/chenpengfei/harness@main`
 
-### 问题 6：下载加速地址（可选）
-
-> "如果你所在网络访问 `raw.githubusercontent.com` 较慢（例如中国大陆），可填写替代的文件 Raw URL 前缀，Agent 将优先使用该地址拉取 harness 文件。"
->
-> 例如（jsDelivr CDN，中国访问快速）：`https://cdn.jsdelivr.net/gh/chenpengfei/harness@main`
->
-> 若网络正常或不需要，直接回车跳过（留空）。
-
-记录为：`RAW_BASE_URL`（可为空）
+记录为：`RAW_BASE_URL`
 
 ### 写入配置文件
 
@@ -84,7 +74,6 @@
   "techType": "<TECH_TYPE>",
   "teamSize": "<TEAM_SIZE>",
   "projectStage": "<PROJECT_STAGE>",
-  "harnessRepo": "<HARNESS_REPO>",
   "rawBaseUrl": "<RAW_BASE_URL>"
 }
 ```
@@ -93,22 +82,3 @@
 > "以上信息是否正确？确认后将开始安装第一个维度（E - 环境）。"
 
 等待确认后继续 Phase 2。
-
-### 拉取 .harness/ 模板目录
-
-**若 `HARNESS_REPO` 非空**，在创建配置文件后，将 harness 仓库的 `.harness/` 目录拉取到目标工程：
-
-```bash
-# 使用 git sparse-checkout 仅拉取 .harness/ 目录
-git clone --depth=1 --filter=blob:none --sparse <HARNESS_REPO> /tmp/harness_pull_tmp
-cd /tmp/harness_pull_tmp
-git sparse-checkout set .harness
-cd -
-# 将 .harness/ 中的文件复制到目标项目（保留 harness-config.json，不覆盖）
-rsync -av --exclude='harness-config.json' /tmp/harness_pull_tmp/.harness/ .harness/
-rm -rf /tmp/harness_pull_tmp
-```
-
-若 git 命令执行失败或 `HARNESS_REPO` 为空，跳过此步骤；后续 Phase 2–5 会直接在 `.harness/` 下生成所需文件。
-
-> **说明**：此步骤将 harness 仓库的 E-K-C-F 模板文件预填充到 `.harness/` 中，后续各 Phase 会根据项目实际情况覆盖或补充这些文件的内容。
