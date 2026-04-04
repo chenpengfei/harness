@@ -74,6 +74,12 @@
 
 > **Agent 注意**：通过 WebFetch 或 Read 从 harness 仓库对应路径读取文件内容，完全复制，不做任何修改。
 
+### 6.2b 创建 .claude/commands/govern.md
+
+从 harness 仓库读取 `.claude/commands/govern.md` 并创建到目标项目。
+
+> **Agent 注意**：通过 WebFetch 或 Read 从 harness 仓库对应路径读取文件内容，完全复制，不做任何修改。
+
 ### 6.3 打印安装摘要
 
 向用户展示完整的安装摘要：
@@ -95,6 +101,7 @@
 > - `.claude/commands/commit.md`
 > - `.claude/commands/push.md`
 > - `.claude/commands/harness.md`
+> - `.claude/commands/govern.md`
 > - `.claude/hooks/validate-commit-msg.py`
 > - `.claude/settings.json`
 > - `.claude/skills/harness-env.md`

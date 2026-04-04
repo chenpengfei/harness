@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "installedAt": "2026-04-04T00:00:00Z",
+  "updatedAt": "2026-04-04T00:00:00Z",
+  "project": {
+    "name": "harness",
+    "description": "Agent-First 工程脚手架，通过 E-K-C-F 四个维度提升工程对 Agent 的友好度"
+  },
+  "techStack": "Markdown / Python",
+  "techType": "generic",
+  "teamSize": "solo",
+  "projectStage": "exploration",
+  "rawBaseUrl": "https://cdn.jsdelivr.net/gh/chenpengfei/harness@main"
+}

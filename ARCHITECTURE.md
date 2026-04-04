@@ -36,7 +36,7 @@ harness/
 └── install/        # INSTALL.md 各阶段详细剧本
 ```
 
-**INSTALL.md** 是整个系统的入口点，也是最重要的文件。Agent 读取它、按剧本在目标项目中安装能力。安装完成后 harness 仓库与目标项目之间安装后无依赖。
+**INSTALL.md** 是整个系统的入口点，也是最重要的文件。Agent 读取它、按剧本在目标项目中安装能力。
 
 **`install/`** 把 INSTALL.md 的每个安装阶段拆分为独立文件（`phase-0-preflight.md` 至 `phase-7-agent-team.md`），供 INSTALL.md 引用或 Agent 按需读取。
 

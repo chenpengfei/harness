@@ -54,6 +54,7 @@ Harness 是一个 Agent-First 工程支架，通过 **E-K-C-F** 四个维度提�
     │   ├── commit.md                  # /commit 命令
     │   ├── push.md                    # /push 命令
     │   ├── harness.md                 # /harness 更新命令
+    │   ├── govern.md                  # /govern 治理命令
     │   └── do.md                      # /do 命令（Phase 7 可选）
     ├── hooks/
     │   └── validate-commit-msg.py     # Semantic Commit 格式验证 hook

@@ -92,6 +92,7 @@
 | `/.claude/commands/commit.md` | `.claude/commands/commit.md` |
 | `/.claude/commands/push.md` | `.claude/commands/push.md` |
 | `/.claude/commands/harness.md` | `.claude/commands/harness.md` |
+| `/.claude/commands/govern.md` | `.claude/commands/govern.md` |
 | `/.claude/hooks/validate-commit-msg.py` | `.claude/hooks/validate-commit-msg.py` |
 | `/.harness/constraints/README.md` | `.harness/constraints/README.md` |
 | `/.harness/environment/README.md` | `.harness/environment/README.md` |
