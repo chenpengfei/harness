@@ -15,7 +15,7 @@
 
 ## 设计目标
 
-- 人类掌舵：关键节点（设计审批、实现确认、PR 合并）必须暂停等待用户确认
+- 人类审批：关键节点（设计审批、实现确认、PR 合并）必须暂停等待用户确认
 - 流程可见：TaskCreate/TaskList 提供任务进度的"记忆锚点"
 - Agent 专业化：每个 Agent 文件自洽，职责单一，可独立理解和维护
 - 可安装：整套文件通过 INSTALL.md 安装到任意目标工程
@@ -163,7 +163,7 @@ AskUserQuestion:
 
 ## INSTALL.md 集成
 
-在现有 Phase 5（F 回路）之后添加 **Phase 6 — Agent Team（可选）**：
+在现有 Phase 5（F 反馈）之后添加 **Phase 6 — Agent Team（可选）**：
 
 - 阶段性质：可选，用户可跳过
 - 安装内容：`.claude/commands/do.md` + `.claude/skills/agent-team/` 全部 9 个文件
